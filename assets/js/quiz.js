@@ -35,7 +35,10 @@ const questions = [
 let currentQuestionIndex = 0;
 let score = 0;
 let bestScore = loadFromLocalStorage("bestScore", 0);
-let timerId = null;
+let questionTimerId = null;
+let globalTimerId = null;
+let globalTimeLeft = 0;
+let isTimeTrial = false;
 
 // DOM Elements
 const introScreen = getElement("#intro-screen");
@@ -50,6 +53,10 @@ const answersDiv = getElement("#answers");
 const nextBtn = getElement("#next-btn");
 const startBtn = getElement("#start-btn");
 const restartBtn = getElement("#restart-btn");
+const timeTrialToggle = getElement("#time-trial-toggle");
+const timerDiv = getElement("#timer-div");
+const globalTimerDiv = getElement("#global-timer-div");
+const globalTimeLeftSpan = getElement("#global-time-left");
 
 const scoreText = getElement("#score-text");
 const timeLeftSpan = getElement("#time-left");
@@ -64,20 +71,53 @@ restartBtn.addEventListener("click", restartQuiz);
 
 setText(bestScoreValue, bestScore);
 
+const getTotalTimeLimit = () =>
+  questions.reduce((total, question) => total + question.timeLimit, 0);
+
+const clearTimers = () => {
+  clearInterval(questionTimerId);
+  clearInterval(globalTimerId);
+  questionTimerId = null;
+  globalTimerId = null;
+};
+
 function startQuiz() {
   hideElement(introScreen);
   showElement(questionScreen);
 
+  clearTimers();
   currentQuestionIndex = 0;
   score = 0;
+  isTimeTrial = timeTrialToggle ? timeTrialToggle.checked : false;
 
   setText(totalQuestionsSpan, questions.length);
+
+  if (isTimeTrial) {
+    globalTimeLeft = getTotalTimeLimit();
+    setText(globalTimeLeftSpan, globalTimeLeft);
+    showElement(globalTimerDiv);
+    hideElement(timerDiv);
+    globalTimerId = startTimer(
+      globalTimeLeft,
+      (timeLeft) => {
+        globalTimeLeft = timeLeft;
+        setText(globalTimeLeftSpan, timeLeft);
+      },
+      () => {
+        lockAnswers(answersDiv);
+        endQuiz();
+      }
+    );
+  } else {
+    hideElement(globalTimerDiv);
+    showElement(timerDiv);
+  }
 
   showQuestion();
 }
 
 function showQuestion() {
-  clearInterval(timerId);
+  clearInterval(questionTimerId);
 
   const q = questions[currentQuestionIndex];
   setText(questionText, q.text);
@@ -91,8 +131,12 @@ function showQuestion() {
 
   nextBtn.classList.add("hidden");
 
-  timeLeftSpan.textContent = q.timeLimit;
-  timerId = startTimer(
+  if (isTimeTrial) {
+    return;
+  }
+
+  setText(timeLeftSpan, q.timeLimit);
+  questionTimerId = startTimer(
     q.timeLimit,
     (timeLeft) => setText(timeLeftSpan, timeLeft),
     () => {
@@ -103,7 +147,7 @@ function showQuestion() {
 }
 
 function selectAnswer(index, btn) {
-  clearInterval(timerId);
+  clearInterval(questionTimerId);
 
   const q = questions[currentQuestionIndex];
   if (index === q.correct) {
@@ -128,6 +172,7 @@ function nextQuestion() {
 }
 
 function endQuiz() {
+  clearTimers();
   hideElement(questionScreen);
   showElement(resultScreen);
 
@@ -141,6 +186,7 @@ function endQuiz() {
 }
 
 function restartQuiz() {
+  clearTimers();
   hideElement(resultScreen);
   showElement(introScreen);
 
