@@ -1,0 +1,26 @@
+{
+  "name": "quiz-interactif",
+  "version": "1.0.0",
+  "description": "Un quiz interactif en HTML/CSS/JS permettant : - Un **timer** par question, - Un **feedback** rouge/vert immédiat, - Une **barre de progression** (question X/Y), - Une **sauvegarde du meilleur score** en localStorage.",
+  "main": "script.js",
+  "scripts": {
+    "sass": "sass assets/scss/style.scss assets/css/style.css",
+    "sass:watch": "sass --watch assets/scss/style.scss assets/css/style.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Azxrth/quiz-interactif.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Azxrth/quiz-interactif/issues"
+  },
+  "homepage": "https://github.com/Azxrth/quiz-interactif#readme",
+  "devDependencies": {
+    "sass": "^1.97.2"
+  }
+}

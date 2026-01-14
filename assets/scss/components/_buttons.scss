@@ -1,0 +1,36 @@
+button {
+  margin: 10px auto;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #1565c0;
+}
+
+#answers button {
+  display: block;
+  width: 60%;
+  margin: 8px auto;
+  background-color: #f5f5f5;
+  color: #333;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+#answers button:hover {
+  background-color: #e0e0e0;
+}
+
+.correct {
+  background-color: #c8e6c9 !important; /* vert clair */
+}
+
+.wrong {
+  background-color: #ffcdd2 !important; /* rouge clair */
+}
