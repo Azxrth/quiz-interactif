@@ -1,12 +1,13 @@
 console.log("Quiz JS loaded...");
 
 const getElement = (selector) => document.querySelector(selector);
-const showElement = (element) => (element.style.display = "block");
+const showElement = (element) => (element.style.display = "");
 const hideElement = (element) => (element.style.display = "none");
 const setText = (element, text) => (element.textContent = text);
 
 const createAnswerButton = (text, onClick) => {
   const btn = document.createElement("button");
+  btn.classList.add("answer-btn");
   btn.textContent = text;
   btn.addEventListener("click", onClick);
   return btn;
@@ -218,6 +219,7 @@ const timeTrialDurationInput = getElement("#time-trial-duration");
 const timerDiv = getElement("#timer-div");
 const globalTimerDiv = getElement("#global-timer-div");
 const globalTimeLeftSpan = getElement("#global-time-left");
+const progressFill = getElement("#progress-fill");
 
 const scoreText = getElement("#score-text");
 const timeLeftSpan = getElement("#time-left");
@@ -237,6 +239,16 @@ const clearTimers = () => {
   clearInterval(globalTimerId);
   questionTimerId = null;
   globalTimerId = null;
+};
+
+const updateProgressBar = () => {
+  if (!progressFill) {
+    return;
+  }
+  const total = questions.length;
+  const current = Math.min(currentQuestionIndex + 1, total);
+  const percent = total ? Math.round((current / total) * 100) : 0;
+  progressFill.style.width = `${percent}%`;
 };
 
 const getTimeTrialDuration = () => {
@@ -291,6 +303,7 @@ function showQuestion() {
   const q = questions[currentQuestionIndex];
   setText(questionText, q.text);
   setText(currentQuestionIndexSpan, currentQuestionIndex + 1);
+  updateProgressBar();
 
   answersDiv.innerHTML = "";
   q.answers.forEach((answer, index) => {

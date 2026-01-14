@@ -1,26 +1,17 @@
 #intro-screen,
 #question-screen,
 #result-screen {
-  max-width: 600px;
-  margin: 0 auto 20px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-#progress {
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #455a64;
+  text-align: left;
 }
 
 #result-screen h2 {
-  margin-bottom: 20px;
-  color: #2e7d32; /* vert fonce */
+  color: var(--color-secondary);
 }
 
-#score-text {
-  font-size: 1.2em;
-  margin-bottom: 10px;
+#question-screen .btn {
+  justify-self: start;
+}
+
+#result-screen .btn {
+  justify-self: start;
 }
