@@ -383,6 +383,8 @@ const buildProgressiveQuestions = () =>
 const TIME_TRIAL_DURATION = 240;
 
 let activeQuestions = buildProgressiveQuestions();
+let questionStats = new Array(activeQuestions.length).fill(null);
+let questionStartTime = null;
 let currentQuestionIndex = 0;
 let score = 0;
 let bestScore = loadFromLocalStorage("bestScore", 0);
@@ -410,6 +412,11 @@ const timerDiv = getElement("#timer-div");
 const globalTimerDiv = getElement("#global-timer-div");
 const globalTimeLeftSpan = getElement("#global-time-left");
 const progressFill = getElement("#progress-fill");
+const statsScreen = getElement("#stats-screen");
+const statsCorrect = getElement("#stats-correct");
+const statsWrong = getElement("#stats-wrong");
+const statsAverageTime = getElement("#stats-average-time");
+const statsList = getElement("#stats-list");
 
 const scoreText = getElement("#score-text");
 const timeLeftSpan = getElement("#time-left");
@@ -441,6 +448,112 @@ const updateProgressBar = () => {
   progressFill.style.width = `${percent}%`;
 };
 
+const difficultyLabels = {
+  easy: "Facile",
+  medium: "Moyen",
+  hard: "Difficile",
+};
+
+const formatSeconds = (value) => {
+  if (!Number.isFinite(value)) {
+    return "0s";
+  }
+  return `${value.toFixed(1)} s`;
+};
+
+const resetStats = () => {
+  questionStats = new Array(activeQuestions.length).fill(null);
+  questionStartTime = null;
+  if (statsList) {
+    statsList.innerHTML = "";
+  }
+  if (statsCorrect) {
+    setText(statsCorrect, "0");
+  }
+  if (statsWrong) {
+    setText(statsWrong, "0");
+  }
+  if (statsAverageTime) {
+    setText(statsAverageTime, "0s");
+  }
+};
+
+const recordQuestionStats = ({ isCorrect, timedOut }) => {
+  if (questionStats[currentQuestionIndex]) {
+    return;
+  }
+  const q = activeQuestions[currentQuestionIndex];
+  if (!q) {
+    return;
+  }
+  const now = Date.now();
+  const timeSpent = questionStartTime ? (now - questionStartTime) / 1000 : 0;
+  questionStats[currentQuestionIndex] = {
+    text: q.text,
+    difficulty: q.difficulty,
+    isCorrect: Boolean(isCorrect) && !timedOut,
+    timedOut: Boolean(timedOut),
+    timeSpent,
+  };
+};
+
+const renderStats = () => {
+  if (!statsList) {
+    return;
+  }
+  const entries = questionStats.filter(Boolean);
+  const correctCount = entries.filter((entry) => entry.isCorrect).length;
+  const wrongCount = entries.length - correctCount;
+  const averageTime = entries.length
+    ? entries.reduce((sum, entry) => sum + entry.timeSpent, 0) / entries.length
+    : 0;
+
+  setText(statsCorrect, correctCount.toString());
+  setText(statsWrong, wrongCount.toString());
+  setText(statsAverageTime, formatSeconds(averageTime));
+
+  statsList.innerHTML = "";
+  entries.forEach((entry, index) => {
+    const item = document.createElement("div");
+    item.classList.add("stats-item");
+
+    const title = document.createElement("div");
+    title.classList.add("stats-question");
+    title.textContent = `${index + 1}. ${entry.text}`;
+
+    const meta = document.createElement("div");
+    meta.classList.add("stats-meta");
+
+    const difficultyBadge = document.createElement("span");
+    difficultyBadge.classList.add(
+      "stats-badge",
+      `stats-badge--${entry.difficulty || "medium"}`
+    );
+    difficultyBadge.textContent =
+      difficultyLabels[entry.difficulty] || "Moyen";
+
+    const statusBadge = document.createElement("span");
+    if (entry.timedOut) {
+      statusBadge.classList.add("stats-badge", "stats-badge--timeout");
+      statusBadge.textContent = "Temps écoulé";
+    } else if (entry.isCorrect) {
+      statusBadge.classList.add("stats-badge", "stats-badge--good");
+      statusBadge.textContent = "Bonne réponse";
+    } else {
+      statusBadge.classList.add("stats-badge", "stats-badge--bad");
+      statusBadge.textContent = "Mauvaise réponse";
+    }
+
+    const timeBadge = document.createElement("span");
+    timeBadge.classList.add("stats-time");
+    timeBadge.textContent = formatSeconds(entry.timeSpent);
+
+    meta.append(difficultyBadge, statusBadge, timeBadge);
+    item.append(title, meta);
+    statsList.appendChild(item);
+  });
+};
+
 const getTimeTrialDuration = () => {
   if (!timeTrialDurationInput) {
     return TIME_TRIAL_DURATION;
@@ -455,9 +568,13 @@ const getTimeTrialDuration = () => {
 function startQuiz() {
   hideElement(introScreen);
   showElement(questionScreen);
+  if (statsScreen) {
+    hideElement(statsScreen);
+  }
 
   clearTimers();
   activeQuestions = buildProgressiveQuestions();
+  resetStats();
   currentQuestionIndex = 0;
   score = 0;
   isTimeTrial = timeTrialToggle ? timeTrialToggle.checked : false;
@@ -476,6 +593,7 @@ function startQuiz() {
         setText(globalTimeLeftSpan, timeLeft);
       },
       () => {
+        recordQuestionStats({ isCorrect: false, timedOut: true });
         lockAnswers(answersDiv);
         endQuiz();
       }
@@ -495,6 +613,7 @@ function showQuestion() {
   setText(questionText, q.text);
   setText(currentQuestionIndexSpan, currentQuestionIndex + 1);
   updateProgressBar();
+  questionStartTime = Date.now();
 
   answersDiv.innerHTML = "";
   q.answers.forEach((answer, index) => {
@@ -513,6 +632,7 @@ function showQuestion() {
     q.timeLimit,
     (timeLeft) => setText(timeLeftSpan, timeLeft),
     () => {
+      recordQuestionStats({ isCorrect: false, timedOut: true });
       lockAnswers(answersDiv);
       nextBtn.classList.remove("hidden");
     }
@@ -530,6 +650,7 @@ function selectAnswer(index, btn) {
     btn.classList.add("wrong");
   }
 
+  recordQuestionStats({ isCorrect: index === q.correct, timedOut: false });
   markCorrectAnswer(answersDiv, q.correct);
   lockAnswers(answersDiv);
   nextBtn.classList.remove("hidden");
@@ -556,11 +677,18 @@ function endQuiz() {
     saveToLocalStorage("bestScore", bestScore);
   }
   setText(bestScoreEnd, bestScore);
+  renderStats();
+  if (statsScreen) {
+    showElement(statsScreen);
+  }
 }
 
 function restartQuiz() {
   clearTimers();
   hideElement(resultScreen);
+  if (statsScreen) {
+    hideElement(statsScreen);
+  }
   showElement(introScreen);
 
   setText(bestScoreValue, bestScore);

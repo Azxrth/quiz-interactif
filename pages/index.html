@@ -85,6 +85,28 @@
         </p>
         <button id="restart-btn" class="btn btn-primary">Recommencer</button>
       </section>
+
+      <section id="stats-screen" class="card screen" style="display: none">
+        <h2>Statistiques détaillées</h2>
+        <p class="notice">
+          Analysez vos forces et vos axes d'amélioration pour progresser.
+        </p>
+        <div class="stats-summary">
+          <div class="stat-card">
+            <span class="stat-label">Bonnes réponses</span>
+            <span id="stats-correct" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Mauvaises réponses</span>
+            <span id="stats-wrong" class="stat-value">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Temps moyen / question</span>
+            <span id="stats-average-time" class="stat-value">0s</span>
+          </div>
+        </div>
+        <div id="stats-list" class="stats-list"></div>
+      </section>
     </main>
 
     <script src="../assets/js/quiz.js"></script>
