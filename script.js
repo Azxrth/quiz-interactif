@@ -1,3 +1,4 @@
+// NOTE: Fichier obsolète. La version active du quiz est dans assets/js/quiz.js.
 console.log("Quiz JS loaded...");
 
 const questions = [
