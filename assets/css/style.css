@@ -82,6 +82,19 @@ button:hover {
   font-size: 0.95em;
 }
 
+.mode-config {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.95em;
+  color: #555;
+}
+
+.mode-config input {
+  margin-left: 8px;
+  width: 90px;
+  padding: 4px 6px;
+}
+
 #progress {
   font-weight: bold;
   margin-bottom: 10px;

@@ -17,6 +17,16 @@
         <input type="checkbox" id="time-trial-toggle" />
         Mode contre-la-montre (temps global)
       </label>
+      <label class="mode-config">
+        Durée du mode contre-la-montre (secondes)
+        <input
+          type="number"
+          id="time-trial-duration"
+          min="30"
+          max="900"
+          value="150"
+        />
+      </label>
       <button id="start-btn">Commencer le quiz</button>
     </div>
 
@@ -43,6 +53,6 @@
       <button id="restart-btn">Recommencer</button>
     </div>
 
-    <script type="module" src="../assets/js/quiz.js"></script>
+    <script src="../assets/js/quiz.js"></script>
   </body>
 </html>
