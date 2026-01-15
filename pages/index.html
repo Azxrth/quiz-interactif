@@ -25,13 +25,93 @@
       </header>
 
       <section id="intro-screen" class="card screen">
-        <p class="notice">
-          Choisissez votre rythme, puis lancez la session pour battre votre
-          meilleur score.
-        </p>
-        <p class="score-line">
-          Meilleur score : <span id="best-score-value">0</span>
-        </p>
+      <p class="notice">
+        Choisissez votre rythme, puis lancez la session pour battre votre
+        meilleur score.
+      </p>
+      <div class="theme-picker">
+        <div class="theme-picker__header">
+          <h3 class="theme-title">Choisis un thème</h3>
+          <p class="theme-hint">20 questions par thème, difficulté progressive.</p>
+        </div>
+        <div class="theme-grid" role="radiogroup" aria-label="Choix du thème">
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="general" checked />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Culture générale</span>
+              <span class="theme-card__desc">
+                Faits, records, pays, histoire rapide.
+              </span>
+            </span>
+          </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="cinema" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Cinéma &amp; séries</span>
+              <span class="theme-card__desc">
+                Répliques, acteurs, univers, scènes cultes.
+              </span>
+            </span>
+          </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="music" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Musique</span>
+              <span class="theme-card__desc">
+                Genres, artistes, décennies, blind test soft.
+              </span>
+            </span>
+          </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="gaming" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Jeux vidéo</span>
+              <span class="theme-card__desc">
+                Consoles, licences, mécaniques, personnages.
+              </span>
+            </span>
+          </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="sport" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Sport</span>
+              <span class="theme-card__desc">
+                Règles, grands événements, légendes, clubs.
+              </span>
+            </span>
+          </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="science" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Science &amp; espace</span>
+              <span class="theme-card__desc">
+                Planètes, corps humain, technologies, fun facts.
+              </span>
+            </span>
+          </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="tech" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Technologie &amp; internet</span>
+              <span class="theme-card__desc">
+                Réseaux sociaux, culture web, sécurité.
+              </span>
+            </span>
+          </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="food" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Food &amp; cuisine du monde</span>
+              <span class="theme-card__desc">
+                Plats, pays d'origine, ingrédients, traditions.
+              </span>
+            </span>
+          </label>
+        </div>
+      </div>
+      <p class="score-line">
+        Meilleur score : <span id="best-score-value">0</span>
+      </p>
         <div class="settings">
           <label class="mode-toggle">
             <input type="checkbox" id="time-trial-toggle" />
@@ -56,8 +136,11 @@
       <section id="question-screen" class="card screen" style="display: none">
         <div id="progress" class="progress">
           <div class="progress__meta">
-            Question <span id="current-question-index"></span> /
-            <span id="total-questions"></span>
+            <span>
+              Question <span id="current-question-index"></span> /
+              <span id="total-questions"></span>
+            </span>
+            <span id="theme-label" class="theme-label"></span>
           </div>
           <div class="progress__bar">
             <span id="progress-fill" class="progress__fill"></span>
