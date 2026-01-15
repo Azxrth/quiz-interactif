@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../assets/css/style.css" />
   </head>
   <body>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Basculer le mode sombre"></button>
     <main class="app">
       <header class="hero">
         <p class="eyebrow">Quiz interactif</p>
@@ -113,6 +114,10 @@
       </p>
         <div class="settings">
           <label class="mode-toggle">
+            <input type="checkbox" id="flashcard-toggle" />
+            Mode Flashcard (entraînement sans timer ni score)
+          </label>
+          <label class="mode-toggle">
             <input type="checkbox" id="time-trial-toggle" />
             Mode contre-la-montre (temps global)
           </label>
@@ -205,9 +210,15 @@
         </div>
         <div id="stats-list" class="stats-list"></div>
       </section>
+
+      <section class="recap">
+
+      </section>
+
     </main>
 
     <script src="../assets/js/quiz.js"></script>
     <script src="../assets/js/animations.js"></script>
+    <script src="../assets/js/theme-toggle.js"></script>
   </body>
 </html>
