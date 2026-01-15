@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   --font-display: "Fraunces", "Georgia", serif;
   --font-body: "DM Sans", "Gill Sans", sans-serif;
@@ -24,10 +25,10 @@
 }
 
 html.dark-mode {
-  --color-bg: #1a1a1a;
-  --color-bg-accent: #2d2d2d;
-  --color-surface: #242424;
-  --color-surface-strong: #2e2e2e;
+  --color-bg: #111111;
+  --color-bg-accent: #1a1a1a;
+  --color-surface: #2a2a2a;
+  --color-surface-strong: #2d2d2d;
   --color-ink: #f0f0f0;
   --color-muted: #b0b0b0;
   --color-primary: #ff8c6b;
@@ -60,7 +61,7 @@ body {
 }
 
 html.dark-mode body {
-  background: radial-gradient(circle at 15% 20%, rgba(255, 140, 107, 0.08), transparent 45%), radial-gradient(circle at 85% 10%, rgba(77, 184, 168, 0.1), transparent 40%), radial-gradient(circle at 20% 80%, rgba(255, 217, 102, 0.08), transparent 45%), linear-gradient(140deg, #1a1a1a 0%, #1f1f1f 55%, #1d1d1d 100%);
+  background: #111111;
 }
 
 body::after {
@@ -72,12 +73,11 @@ body::after {
   opacity: 0.12;
   pointer-events: none;
   z-index: 0;
-  transition: opacity var(--transition-base);
 }
 
 html.dark-mode body::after {
-  background-image: radial-gradient(rgba(240, 240, 240, 0.05) 1px, transparent 1px);
-  opacity: 0.08;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  opacity: 0.04;
 }
 
 h1,
@@ -244,11 +244,6 @@ body.is-loaded .hero .lead {
   backdrop-filter: blur(6px);
 }
 
-html.dark-mode .hero {
-  background: rgba(60, 60, 60, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -268,13 +263,23 @@ html.dark-mode .hero {
   pointer-events: none;
 }
 
-html.dark-mode .card {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+html.dark-mode .hero {
+  background: rgba(20, 20, 20, 0.7);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  backdrop-filter: none;
 }
-
+html.dark-mode .card {
+  background: var(--color-surface);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-md);
+}
 html.dark-mode .card::after {
-  background: linear-gradient(135deg, rgba(77, 184, 168, 0.15), transparent 60%);
-  opacity: 0.2;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), transparent 60%);
+  opacity: 0.18;
+}
+html.dark-mode .score-line {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .screen {
@@ -492,20 +497,9 @@ html.dark-mode .card::after {
   box-shadow: var(--shadow-sm);
 }
 
-html.dark-mode .timer {
-  background: rgba(60, 60, 60, 0.8);
-  border: 1px solid rgba(255, 107, 122, 0.3);
-  color: #ff8f9d;
-}
-
 .timer--global {
   color: var(--color-secondary);
   border-color: rgba(42, 157, 143, 0.35);
-}
-
-html.dark-mode .timer--global {
-  border-color: rgba(77, 184, 168, 0.5);
-  color: #7dd3c0;
 }
 
 .theme-toggle {
@@ -526,17 +520,14 @@ html.dark-mode .timer--global {
   font-size: 24px;
   box-shadow: var(--shadow-md);
 }
-
 .theme-toggle:hover {
   background: var(--color-bg-accent);
   border-color: var(--color-primary);
   transform: scale(1.1);
 }
-
 .theme-toggle:active {
   transform: scale(0.95);
 }
-
 .theme-toggle::before {
   content: "☀️";
   transition: opacity var(--transition-fast);
@@ -580,6 +571,11 @@ html.dark-mode .theme-toggle::before {
 .mode-config input:focus {
   outline: 2px solid rgba(42, 157, 143, 0.3);
   border-color: rgba(42, 157, 143, 0.6);
+}
+
+html.dark-mode .mode-config input {
+  background: #3a3a3a;
+  border-color: rgba(77, 184, 168, 0.2);
 }
 
 .stats-summary {
@@ -772,6 +768,11 @@ html.dark-mode .theme-toggle::before {
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-fast);
 }
 
+html.dark-mode .theme-card__body {
+  background: #2a2a2a;
+  border-color: rgba(77, 184, 168, 0.2);
+}
+
 .theme-card__title {
   font-weight: 700;
   color: var(--color-ink);
@@ -789,9 +790,14 @@ html.dark-mode .theme-toggle::before {
 }
 
 .theme-card input:checked + .theme-card__body {
-  border-color: rgba(42, 157, 143, 0.6);
+  border-color: var(--color-secondary);
   background: rgba(42, 157, 143, 0.12);
   box-shadow: var(--shadow-sm);
+}
+
+html.dark-mode .theme-card input:checked + .theme-card__body {
+  border-color: var(--color-secondary);
+  background: rgba(77, 184, 168, 0.15);
 }
 
 .theme-label {
