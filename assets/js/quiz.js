@@ -1798,6 +1798,46 @@ const updateProgressBar = () => {
   progressFill.style.width = `${percent}%`;
 };
 
+const preloadedImages = new Set();
+
+const preloadImages = (sources = []) => {
+  sources.forEach((src) => {
+    if (!src || preloadedImages.has(src)) {
+      return;
+    }
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+    preloadedImages.add(src);
+  });
+};
+
+const preloadThemeImages = (theme) => {
+  if (!theme || !theme.questions) {
+    return;
+  }
+  const sources = [];
+  theme.questions.forEach((question) => {
+    if (question.promptImage) {
+      sources.push(question.promptImage);
+    }
+    (question.answers || []).forEach((answer) => {
+      if (answer && typeof answer === "object" && answer.imageSrc) {
+        sources.push(answer.imageSrc);
+      }
+    });
+  });
+  if (!sources.length) {
+    return;
+  }
+  const schedule = () => preloadImages(sources);
+  if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+    window.requestIdleCallback(schedule);
+  } else {
+    setTimeout(schedule, 0);
+  }
+};
+
 const isImageQuestion = (question) =>
   Boolean(
     (question && question.promptImage) ||
@@ -2200,6 +2240,7 @@ function startQuiz() {
   activeQuestions = buildProgressiveQuestions(currentTheme.questions);
   updateThemeLabel(currentTheme);
   resetStats();
+  preloadThemeImages(currentTheme);
   keepingScore.length = 0;
   currentQuestionIndex = 0;
   score = 0;
