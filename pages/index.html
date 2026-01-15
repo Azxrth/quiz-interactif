@@ -155,15 +155,30 @@
         </div>
         <p id="question-text" class="question"></p>
         <div class="question-actions">
-          <button
-            id="play-audio-btn"
-            class="btn btn-secondary btn-audio"
-            type="button"
-          >
-            Lecture
-          </button>
-          <span id="audio-status" class="audio-status" aria-live="polite"></span>
+          <div class="question-actions__group">
+            <button
+              id="play-audio-btn"
+              class="btn btn-secondary btn-audio"
+              type="button"
+            >
+              Lecture
+            </button>
+            <span id="audio-status" class="audio-status" aria-live="polite"></span>
+          </div>
+          <div class="question-actions__group">
+            <button
+              id="hint-btn"
+              class="btn btn-secondary btn-hint hidden"
+              type="button"
+              aria-controls="hint-box"
+              aria-expanded="false"
+            >
+              Indice
+            </button>
+            <span id="hint-status" class="hint-status" aria-live="polite"></span>
+          </div>
         </div>
+        <div id="hint-box" class="hint-box hidden" aria-live="polite"></div>
         <div id="answers" class="answers"></div>
         <button id="next-btn" class="btn btn-secondary hidden">
           Question suivante

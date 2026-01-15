@@ -1082,6 +1082,89 @@ const themesById = themes.reduce((acc, theme) => {
   return acc;
 }, {});
 
+const hintsByQuestionText = {
+  "Quel courant océanique chaud influence le climat de l'Europe de l'Ouest ?":
+    "Courant chaud de l'Atlantique Nord issu du golfe du Mexique.",
+  "Quelle est la distance moyenne entre la Terre et le Soleil ?":
+    "Environ une unité astronomique (cent cinquante millions de km).",
+  "Combien de chromosomes possède l'être humain ?":
+    "Total de chromosomes = deux fois 23.",
+  "Quel est le plus long os du corps humain ?":
+    "Os long situé dans la cuisse.",
+  "Quel est le symbole chimique de l'or ?":
+    "Symbole dérivé du mot latin aurum.",
+  "Quel réalisateur a signé Pulp Fiction ?":
+    "Même réalisateur que Reservoir Dogs et Kill Bill.",
+  "Dans Matrix, quelle est la pilule qui révèle la vérité ?":
+    "Choisis la couleur qui te sort de l'illusion, pas celle qui la prolonge.",
+  "Quel film a remporté l'Oscar du meilleur film en 2020 ?":
+    "Film sud-coréen primé sur les inégalités sociales.",
+  "Dans la série Sherlock (BBC), quel est le prénom de Watson ?":
+    "Prénom masculin anglais très courant, initiale J.",
+  "Quel film culte se déroule en grande partie dans un motel tenu par Norman Bates ?":
+    "Thriller d'Hitchcock célèbre pour une scène de douche.",
+  "Quel groupe est derrière l'album \"The Dark Side of the Moon\" ?":
+    "Groupe britannique de rock progressif mené par Gilmour et Waters.",
+  "Quel style musical est né en Jamaïque à la fin des années 60 ?":
+    "Genre jamaïcain popularisé par Bob Marley.",
+  "Quel courant musical est associé à la \"French Touch\" ?":
+    "Mouvement électro français incarné par Daft Punk et Justice.",
+  "Quel compositeur est à l'origine de la 5e symphonie ?":
+    "Compositeur allemand devenu sourd, auteur du motif \"Ta-ta-ta-taaa\".",
+  "Quel artiste est connu pour la chanson \"Like a Rolling Stone\" ?":
+    "Auteur-compositeur folk américain, prix Nobel 2016.",
+  "Quel moteur graphique est développé par Epic Games ?":
+    "Moteur maison d'Epic, utilisé pour Fortnite et Gears of War.",
+  "Quel jeu a popularisé le mode battle royale avant Fortnite ?":
+    "Titre abrégé en PUBG, signé PlayerUnknown.",
+  "Quel personnage est le héros de Metroid ?":
+    "Chasseuse de primes en armure orange.",
+  "Dans Pokémon, quel est le type de Pikachu ?":
+    "Mascotte jaune qui lance des éclairs.",
+  "Quel jeu met en scène le sorceleur Geralt de Riv ?":
+    "Adaptation des romans d'Andrzej Sapkowski.",
+  "Quel est le record du monde du 100 m masculin ?":
+    "Usain Bolt l'a établi à Berlin en 2009 (sous 9,6 s).",
+  "Quel pays a remporté le plus de Coupes du monde de football ?":
+    "Sélection auriverde, cinq étoiles sur le maillot.",
+  "Quel joueur a remporté le plus de Ballons d'Or ?":
+    "Surnommé la Pulga, multiple Ballon d'Or.",
+  "Quelle compétition cycliste se termine traditionnellement à Paris ?":
+    "Grand Tour qui finit sur les Champs-Élysées.",
+  "Dans quel sport trouve-t-on la règle du hors-jeu ?":
+    "Sport où elle empêche d'attendre devant le but adverse.",
+  "Quel télescope spatial a été lancé en 1990 ?":
+    "Observatoire en orbite nommé d'après Edwin, lancé en 1990.",
+  "Quelle est la vitesse approximative de la lumière ?":
+    "Près de trois cent mille kilomètres par seconde dans le vide.",
+  "Quelle est la première femme à être allée dans l'espace ?":
+    "Cosmonaute soviétique qui a volé en 1963.",
+  "Quelle particule porte une charge négative ?":
+    "Particule légère qui orbite autour du noyau.",
+  "Sur quelle planète se trouve le volcan Olympus Mons ?":
+    "Plus haut volcan du système solaire, sur la planète rouge.",
+  "Quel est le port par défaut du HTTPS ?":
+    "Port sécurisé qui succède au 80.",
+  "Quel langage rend les pages web interactives ?":
+    "Langage exécuté dans le navigateur, souvent abrégé en JS.",
+  "Quel système de gestion de versions est le plus utilisé ?":
+    "VCS utilisé par GitHub et GitLab.",
+  "Que signifie RAM ?":
+    "Initiales de la mémoire vive : Random Access Memory.",
+  "Quelle entreprise développe Android ?":
+    "Entreprise qui édite aussi Chrome et Gmail.",
+  "Le tiramisu contient traditionnellement quel fromage ?":
+    "Dessert italien à base de fromage crémeux.",
+  "Le ramen est une spécialité de quel pays ?":
+    "Bol de nouilles servi dans un bouillon asiatique.",
+  "Le curry rouge est associé à quel pays ?":
+    "Recette au lait de coco venue de Thaïlande.",
+  "Le pain naan est associé à quelle cuisine ?":
+    "Pain plat cuit au tandoor dans la cuisine indienne.",
+  "La poutine vient de quel pays ?":
+    "Plat de frites, sauce brune et fromage en grains venu du Québec.",
+};
+
 const difficultyOrder = {
   easy: 0,
   medium: 1,
@@ -1138,10 +1221,12 @@ const normalizeQuestion = (question) => {
   const timeLimit = Number.isFinite(question.timeLimit)
     ? question.timeLimit
     : DEFAULT_TIME_LIMITS[difficulty] ?? DEFAULT_TIME_LIMITS.medium;
+  const hint = question.hint || hintsByQuestionText[question.text];
   return {
     ...question,
     difficulty,
     timeLimit,
+    hint,
   };
 };
 
@@ -1214,6 +1299,9 @@ const themeLabel = getElement("#theme-label");
 const themeInputs = document.querySelectorAll('input[name="quiz-theme"]');
 const playAudioBtn = getElement("#play-audio-btn");
 const audioStatus = getElement("#audio-status");
+const hintBtn = getElement("#hint-btn");
+const hintStatus = getElement("#hint-status");
+const hintBox = getElement("#hint-box");
 const statsScreen = getElement("#stats-screen");
 const statsCorrect = getElement("#stats-correct");
 const statsWrong = getElement("#stats-wrong");
@@ -1240,6 +1328,9 @@ if (restartBtn) {
 }
 if (playAudioBtn) {
   playAudioBtn.addEventListener("click", toggleAudioPlayback);
+}
+if (hintBtn) {
+  hintBtn.addEventListener("click", revealHint);
 }
 
 setText(bestScoreValue, bestScore);
@@ -1525,6 +1616,51 @@ if (hasSpeechSupport()) {
   window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
 }
 
+const resetHintUI = () => {
+  if (hintBox) {
+    hintBox.classList.add("hidden");
+    setText(hintBox, "");
+  }
+  if (hintStatus) {
+    setText(hintStatus, "");
+  }
+  if (hintBtn) {
+    hintBtn.disabled = true;
+    hintBtn.classList.add("hidden");
+    hintBtn.classList.remove("is-used");
+    hintBtn.setAttribute("aria-expanded", "false");
+  }
+};
+
+const setupHintForQuestion = (question) => {
+  resetHintUI();
+  if (!hintBtn || !hintBox || !question) {
+    return;
+  }
+  const hasHint = question.difficulty === "hard" && question.hint;
+  if (!hasHint) {
+    return;
+  }
+  hintBtn.classList.remove("hidden");
+  hintBtn.disabled = false;
+  hintBtn.setAttribute("aria-expanded", "false");
+};
+
+function revealHint() {
+  const question = activeQuestions[currentQuestionIndex];
+  if (!hintBtn || !hintBox || !question) {
+    return;
+  }
+  if (question.difficulty !== "hard" || !question.hint) {
+    return;
+  }
+  setText(hintBox, question.hint);
+  hintBox.classList.remove("hidden");
+  hintBtn.disabled = true;
+   hintBtn.classList.add("is-used");
+  hintBtn.setAttribute("aria-expanded", "true");
+}
+
 const resetStats = () => {
   questionStats = new Array(activeQuestions.length).fill(null);
   questionStartTime = null;
@@ -1637,6 +1773,7 @@ function startQuiz() {
   }
 
   clearTimers();
+  resetHintUI();
   currentTheme = getSelectedTheme();
   activeQuestions = buildProgressiveQuestions(currentTheme.questions);
   updateThemeLabel(currentTheme);
@@ -1679,6 +1816,7 @@ function showQuestion() {
   setText(questionText, q.text);
   setText(currentQuestionIndexSpan, currentQuestionIndex + 1);
   updateProgressBar();
+  setupHintForQuestion(q);
   questionStartTime = Date.now();
   prepareAudioForQuestion();
 
@@ -1735,6 +1873,7 @@ function nextQuestion() {
 function endQuiz() {
   clearTimers();
   stopAudio();
+  resetHintUI();
   hideElement(questionScreen);
   showElement(resultScreen);
 
@@ -1754,6 +1893,7 @@ function endQuiz() {
 function restartQuiz() {
   clearTimers();
   stopAudio();
+  resetHintUI();
   hideElement(resultScreen);
   if (statsScreen) {
     hideElement(statsScreen);
