@@ -1,0 +1,24 @@
+:root {
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "DM Sans", "Gill Sans", sans-serif;
+  --color-bg: #f4efe7;
+  --color-bg-accent: #fdebd2;
+  --color-surface: #fffdf8;
+  --color-surface-strong: #ffffff;
+  --color-ink: #1f2a33;
+  --color-muted: #55606b;
+  --color-primary: #ff6b4a;
+  --color-primary-dark: #e24f30;
+  --color-secondary: #2a9d8f;
+  --color-accent: #f2c14e;
+  --color-success: #2f9e44;
+  --color-danger: #e63946;
+  --radius-lg: 24px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-lg: 0 32px 70px rgba(31, 42, 51, 0.15);
+  --shadow-md: 0 18px 32px rgba(31, 42, 51, 0.12);
+  --shadow-sm: 0 8px 18px rgba(31, 42, 51, 0.08);
+  --transition-fast: 150ms ease;
+  --transition-base: 220ms ease;
+}

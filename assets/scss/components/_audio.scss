@@ -1,0 +1,40 @@
+.question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-audio {
+  position: relative;
+  padding-left: 44px;
+}
+
+.btn-audio::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: rgba(42, 157, 143, 0.25);
+  box-shadow: 0 0 0 4px rgba(42, 157, 143, 0.18);
+}
+
+.btn-audio.is-playing {
+  background: linear-gradient(135deg, var(--color-secondary), #45b7a6);
+  color: #fff;
+}
+
+.btn-audio.is-playing::before {
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.25);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.audio-status {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}
