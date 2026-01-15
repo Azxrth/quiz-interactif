@@ -171,13 +171,17 @@
       </section>
 
       <section id="result-screen" class="card screen" style="display: none">
-        <h2>Résultat final</h2>
-        <p id="score-text" class="score-final"></p>
-        <p class="score-line">
-          Meilleur score : <span id="best-score-end">0</span>
-        </p>
-        <button id="restart-btn" class="btn btn-primary">Recommencer</button>
-        <button id="tweet-btn" class="btn btn-secondary">Partager sur Twitter</button>
+        <h2 class="result-title">Résultat final</h2>
+        <div class="result-scores">
+          <p id="score-text" class="score-final"></p>
+          <p class="score-line">
+            Meilleur score : <span id="best-score-end">0</span>
+          </p>
+        </div>
+        <div class="result-actions">
+          <button id="restart-btn" class="btn btn-primary">Recommencer</button>
+          <button id="tweet-btn" class="btn btn-secondary">Partager sur Twitter</button>
+        </div>
       </section>
 
       <section id="stats-screen" class="card screen" style="display: none">

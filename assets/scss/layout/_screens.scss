@@ -15,3 +15,33 @@
 #result-screen .btn {
   justify-self: start;
 }
+
+.result-title {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.result-scores {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.result-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .result-scores {
+    gap: 24px;
+  }
+
+  .result-actions {
+    flex-direction: column;
+  }
+}
