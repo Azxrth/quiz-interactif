@@ -1782,8 +1782,7 @@ const element = document.createElement("div"); // création container
 const answerAssess = document.createElement("span"); // B/M R Html
 answerAssess.classList.add("stat-label");
 if(keepingScore[i] == 'o') {
-  const answerAssessText = document.createTextNode("Bonne réponse"); // création texte B/M R
-  answerAssess.appendChild(answerAssessText); // mise du texte B/M R dans le span
+  const answerAssessText = document.createTextNode("Bonne réponse");
   
 const newContent = document.createTextNode(questions[i].text); 
 element.appendChild(newContent);
