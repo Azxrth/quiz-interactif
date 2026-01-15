@@ -85,6 +85,14 @@ html.dark-mode {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
+.question-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
 .settings {
   display: grid;
   gap: 12px;

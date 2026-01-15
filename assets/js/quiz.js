@@ -1723,6 +1723,8 @@ const bestScoreEnd = getElement("#best-score-end");
 const questionText = getElement("#question-text");
 const answersDiv = getElement("#answers");
 const nextBtn = getElement("#next-btn");
+const restartThemeBtn = getElement("#restart-theme-btn");
+const backHomeBtn = getElement("#back-home-btn");
 const startBtn = getElement("#start-btn");
 const restartBtn = getElement("#restart-btn");
 const tweetBtn = getElement("#tweet-btn");
@@ -1760,6 +1762,12 @@ if (startBtn) {
 }
 if (nextBtn) {
   nextBtn.addEventListener("click", nextQuestion);
+}
+if (restartThemeBtn) {
+  restartThemeBtn.addEventListener("click", restartCurrentTheme);
+}
+if (backHomeBtn) {
+  backHomeBtn.addEventListener("click", returnToHome);
 }
 if (restartBtn) {
   restartBtn.addEventListener("click", restartQuiz);
@@ -2332,6 +2340,26 @@ function endQuiz() {
     showElement(statsScreen);
   }
   recap();
+}
+
+function restartCurrentTheme() {
+  hideElement(resultScreen);
+  if (statsScreen) {
+    hideElement(statsScreen);
+  }
+  startQuiz();
+}
+
+function returnToHome() {
+  clearTimers();
+  stopAudio();
+  hideElement(questionScreen);
+  hideElement(resultScreen);
+  if (statsScreen) {
+    hideElement(statsScreen);
+  }
+  showElement(introScreen);
+  setText(bestScoreValue, bestScore);
 }
 
 function restartQuiz() {

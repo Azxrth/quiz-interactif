@@ -317,6 +317,14 @@ html.dark-mode .score-line {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
+.question-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
 .settings {
   display: grid;
   gap: 12px;
@@ -424,6 +432,18 @@ html.dark-mode .score-line {
   background: rgba(42, 157, 143, 0.15);
   color: var(--color-secondary);
   border: 1px solid rgba(42, 157, 143, 0.35);
+}
+
+.btn-restart {
+  background: rgba(242, 193, 78, 0.18);
+  color: var(--color-ink);
+  border: 1px solid rgba(242, 193, 78, 0.45);
+}
+
+.btn-back {
+  background: rgba(230, 57, 70, 0.14);
+  color: var(--color-ink);
+  border: 1px solid rgba(230, 57, 70, 0.4);
 }
 
 .btn:hover {
