@@ -164,6 +164,8 @@ function endQuiz() {
     saveBestScore();
   }
   bestScoreEnd.textContent = bestScore;
+  recap();
+
 }
 
 function restartQuiz() {
@@ -172,3 +174,31 @@ function restartQuiz() {
 
   bestScoreValue.textContent = bestScore;
 }
+
+//Recap
+
+const keepingScore = [];
+
+
+function recap() {
+console.log("haha");
+const array = document.createElement("div");
+array.setAttribute("display", "flex");
+array.setAttribute("flex-direction", "column");
+
+for(let i=0; i<keepingScore.length; i++) {
+const element = document.createElement("div");
+if(keepingScore[i] == 'o') {
+const newContent = document.createTextNode(questions[i].text + "Good answer");
+element.appendChild(newContent);
+array.appendChild(element);
+} else {
+const newContent = document.createTextNode(questions[i].text + "False, the answer was : " + questions[i].answers[correct - 1]);
+element.appendChild(newContent);
+array.appendChild(element);
+}
+}
+resultScreen.appendChild(array);
+console.log("haha");
+}
+
