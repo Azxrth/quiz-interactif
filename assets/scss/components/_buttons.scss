@@ -27,6 +27,18 @@
   border: 1px solid rgba(42, 157, 143, 0.35);
 }
 
+.btn-restart {
+  background: rgba(242, 193, 78, 0.18);
+  color: var(--color-ink);
+  border: 1px solid rgba(242, 193, 78, 0.45);
+}
+
+.btn-back {
+  background: rgba(230, 57, 70, 0.14);
+  color: var(--color-ink);
+  border: 1px solid rgba(230, 57, 70, 0.4);
+}
+
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);

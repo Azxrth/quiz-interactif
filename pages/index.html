@@ -107,6 +107,15 @@
               </span>
             </span>
           </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="image-quiz" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Quiz avec image</span>
+              <span class="theme-card__desc">
+                Analyse visuelle et culture générale en images.
+              </span>
+            </span>
+          </label>
         </div>
       </div>
       <p class="score-line">
@@ -158,8 +167,11 @@
             Temps restant : <span id="time-left">0</span>s
           </div>
         </div>
+        <div id="question-media" class="question-media hidden">
+          <img id="question-image" src="" alt="" />
+        </div>
         <p id="question-text" class="question"></p>
-        <div class="question-actions">
+        <div id="question-actions" class="question-actions">
           <div class="question-actions__group">
             <button
               id="play-audio-btn"
@@ -185,9 +197,25 @@
         </div>
         <div id="hint-box" class="hint-box hidden" aria-live="polite"></div>
         <div id="answers" class="answers"></div>
-        <button id="next-btn" class="btn btn-secondary hidden">
-          Question suivante
-        </button>
+        <div class="question-nav">
+          <button id="next-btn" class="btn btn-secondary hidden">
+            Question suivante
+          </button>
+          <button
+            id="restart-theme-btn"
+            class="btn btn-secondary btn-restart"
+            type="button"
+          >
+            Recommencer
+          </button>
+          <button
+            id="back-home-btn"
+            class="btn btn-secondary btn-back"
+            type="button"
+          >
+            Retour
+          </button>
+        </div>
       </section>
 
       <section id="result-screen" class="card screen" style="display: none">
