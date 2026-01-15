@@ -1,3 +1,43 @@
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--color-muted);
+  background: var(--color-surface);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  z-index: 1000;
+  font-size: 24px;
+  box-shadow: var(--shadow-md);
+
+  &:hover {
+    background: var(--color-bg-accent);
+    border-color: var(--color-primary);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &::before {
+    content: "☀️";
+    transition: opacity var(--transition-fast);
+  }
+}
+
+html.dark-mode .theme-toggle {
+  &::before {
+    content: "🌙";
+  }
+}
+
 .mode-toggle {
   display: inline-flex;
   align-items: center;
@@ -25,7 +65,8 @@
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(31, 42, 51, 0.16);
-  background: #fff;
+  background: var(--color-surface);
+  color: var(--color-ink);
 }
 
 .mode-config input:focus {

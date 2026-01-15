@@ -23,6 +23,24 @@
   --transition-base: 220ms ease;
 }
 
+html.dark-mode {
+  --color-bg: #1a1a1a;
+  --color-bg-accent: #2d2d2d;
+  --color-surface: #242424;
+  --color-surface-strong: #2e2e2e;
+  --color-ink: #f0f0f0;
+  --color-muted: #b0b0b0;
+  --color-primary: #ff8c6b;
+  --color-primary-dark: #ff6b4a;
+  --color-secondary: #4db8a8;
+  --color-accent: #ffd966;
+  --color-success: #51d273;
+  --color-danger: #ff6b7a;
+  --shadow-lg: 0 32px 70px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 18px 32px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
 *,
 *::before,
 *::after {
@@ -38,6 +56,11 @@ body {
   background: radial-gradient(circle at 15% 20%, rgba(255, 107, 74, 0.16), transparent 45%), radial-gradient(circle at 85% 10%, rgba(42, 157, 143, 0.18), transparent 40%), radial-gradient(circle at 20% 80%, rgba(242, 193, 78, 0.18), transparent 45%), linear-gradient(140deg, #f4efe7 0%, #fff6ea 55%, #f9efe1 100%);
   overflow-x: hidden;
   position: relative;
+  transition: background var(--transition-base);
+}
+
+html.dark-mode body {
+  background: radial-gradient(circle at 15% 20%, rgba(255, 140, 107, 0.08), transparent 45%), radial-gradient(circle at 85% 10%, rgba(77, 184, 168, 0.1), transparent 40%), radial-gradient(circle at 20% 80%, rgba(255, 217, 102, 0.08), transparent 45%), linear-gradient(140deg, #1a1a1a 0%, #1f1f1f 55%, #1d1d1d 100%);
 }
 
 body::after {
@@ -49,6 +72,12 @@ body::after {
   opacity: 0.12;
   pointer-events: none;
   z-index: 0;
+  transition: opacity var(--transition-base);
+}
+
+html.dark-mode body::after {
+  background-image: radial-gradient(rgba(240, 240, 240, 0.05) 1px, transparent 1px);
+  opacity: 0.08;
 }
 
 h1,
@@ -215,6 +244,11 @@ body.is-loaded .hero .lead {
   backdrop-filter: blur(6px);
 }
 
+html.dark-mode .hero {
+  background: rgba(60, 60, 60, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -232,6 +266,15 @@ body.is-loaded .hero .lead {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), transparent 60%);
   opacity: 0.4;
   pointer-events: none;
+}
+
+html.dark-mode .card {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+html.dark-mode .card::after {
+  background: linear-gradient(135deg, rgba(77, 184, 168, 0.15), transparent 60%);
+  opacity: 0.2;
 }
 
 .screen {
@@ -444,9 +487,58 @@ body.is-loaded .hero .lead {
   box-shadow: var(--shadow-sm);
 }
 
+html.dark-mode .timer {
+  background: rgba(60, 60, 60, 0.8);
+  border: 1px solid rgba(255, 107, 122, 0.3);
+  color: #ff8f9d;
+}
+
 .timer--global {
   color: var(--color-secondary);
   border-color: rgba(42, 157, 143, 0.35);
+}
+
+html.dark-mode .timer--global {
+  border-color: rgba(77, 184, 168, 0.5);
+  color: #7dd3c0;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--color-muted);
+  background: var(--color-surface);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  z-index: 1000;
+  font-size: 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.theme-toggle:hover {
+  background: var(--color-bg-accent);
+  border-color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle::before {
+  content: "☀️";
+  transition: opacity var(--transition-fast);
+}
+
+html.dark-mode .theme-toggle::before {
+  content: "🌙";
 }
 
 .mode-toggle {
@@ -476,7 +568,8 @@ body.is-loaded .hero .lead {
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(31, 42, 51, 0.16);
-  background: #fff;
+  background: var(--color-surface);
+  color: var(--color-ink);
 }
 
 .mode-config input:focus {
