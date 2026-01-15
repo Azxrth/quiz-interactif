@@ -37,6 +37,30 @@
   pointer-events: none;
 }
 
+html.dark-mode {
+  .hero {
+    background: rgba(20, 20, 20, 0.7);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    backdrop-filter: none;
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card::after {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), transparent 60%);
+    opacity: 0.18;
+  }
+
+  .score-line {
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
 .screen {
   display: grid;
   gap: 16px;
