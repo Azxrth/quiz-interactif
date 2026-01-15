@@ -1092,7 +1092,6 @@ const themes = [
     id: "image-quiz",
     label: "Quiz avec image",
     answerType: "image",
-    disableAudio: true,
     questions: [
       {
         text: "Quelle image montre le Taj Mahal ?",
@@ -1799,12 +1798,7 @@ const isImageQuestion = (question) =>
   );
 
 const isAudioDisabledForQuestion = (question) =>
-  Boolean(
-    currentTheme?.disableAudio ||
-      question?.disableAudio ||
-      question?.answerType === "image" ||
-      currentTheme?.answerType === "image"
-  );
+  Boolean(currentTheme?.disableAudio || question?.disableAudio);
 
 const getSelectedTheme = () => {
   const selectedInput = Array.from(themeInputs).find((input) => input.checked);
