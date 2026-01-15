@@ -74,8 +74,12 @@
   padding: 12px 14px;
   border-radius: var(--radius-md);
   border: 1px solid rgba(31, 42, 51, 0.08);
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-ink);
   font-weight: 600;
   box-shadow: var(--shadow-sm);
+}
+
+html.dark-mode .hint-box {
+  border-color: rgba(255, 255, 255, 0.08);
 }
