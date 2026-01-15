@@ -1,10 +1,12 @@
 #intro-screen,
 #question-screen,
-#result-screen {
+#result-screen,
+#rewards-screen {
   text-align: left;
 }
 
-#result-screen h2 {
+#result-screen h2,
+#rewards-screen h2 {
   color: var(--color-secondary);
 }
 

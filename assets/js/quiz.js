@@ -1940,6 +1940,8 @@ const statsCorrect = getElement("#stats-correct");
 const statsWrong = getElement("#stats-wrong");
 const statsAverageTime = getElement("#stats-average-time");
 const statsList = getElement("#stats-list");
+const rewardsScreen = getElement("#rewards-screen");
+const rewardsList = getElement("#rewards-list");
 
 const scoreText = getElement("#score-text");
 const timeLeftSpan = getElement("#time-left");
@@ -2458,6 +2460,72 @@ const renderStats = () => {
   });
 };
 
+const rewardDefinitions = [
+  {
+    id: "starter",
+    title: "Décollage",
+    description: "5 bonnes réponses.",
+    threshold: 5,
+  },
+  {
+    id: "top-10",
+    title: "Top 10",
+    description: "10 bonnes réponses.",
+    threshold: 10,
+  },
+  {
+    id: "expert",
+    title: "Expert",
+    description: "15 bonnes réponses.",
+    threshold: 15,
+  },
+  {
+    id: "perfect",
+    title: "Sans faute",
+    description: "Score parfait sur le thème.",
+    isPerfect: true,
+  },
+];
+
+const renderRewards = () => {
+  if (!rewardsList) {
+    return;
+  }
+  const entries = questionStats.filter(Boolean);
+  const correctCount = entries.filter((entry) => entry.isCorrect).length;
+  const totalQuestions = activeQuestions.length;
+
+  rewardsList.innerHTML = "";
+  rewardDefinitions.forEach((reward) => {
+    const isPerfect =
+      reward.isPerfect && totalQuestions > 0 && correctCount === totalQuestions;
+    const earned =
+      isPerfect || (!reward.isPerfect && correctCount >= reward.threshold);
+
+    const card = document.createElement("div");
+    card.classList.add("reward-card", earned ? "reward-card--earned" : "reward-card--locked");
+
+    const icon = document.createElement("div");
+    icon.classList.add("reward-card__icon");
+    icon.textContent = reward.isPerfect ? "100%" : `${reward.threshold}+`;
+
+    const title = document.createElement("div");
+    title.classList.add("reward-card__title");
+    title.textContent = reward.title;
+
+    const description = document.createElement("div");
+    description.classList.add("reward-card__desc");
+    description.textContent = reward.description;
+
+    const status = document.createElement("div");
+    status.classList.add("reward-card__status");
+    status.textContent = earned ? "Débloqué" : "À débloquer";
+
+    card.append(icon, title, description, status);
+    rewardsList.appendChild(card);
+  });
+};
+
 const getTimeTrialDuration = () => {
   if (!timeTrialDurationInput) {
     return TIME_TRIAL_DURATION;
@@ -2472,6 +2540,9 @@ const getTimeTrialDuration = () => {
 function startQuiz() {
   hideElement(introScreen);
   showElement(questionScreen);
+  if (rewardsScreen) {
+    hideElement(rewardsScreen);
+  }
   if (statsScreen) {
     hideElement(statsScreen);
   }
@@ -2624,11 +2695,18 @@ function endQuiz() {
   if (statsScreen) {
     showElement(statsScreen);
   }
+  renderRewards();
+  if (rewardsScreen) {
+    showElement(rewardsScreen);
+  }
   recap();
 }
 
 function restartCurrentTheme() {
   hideElement(resultScreen);
+  if (rewardsScreen) {
+    hideElement(rewardsScreen);
+  }
   if (statsScreen) {
     hideElement(statsScreen);
   }
@@ -2640,6 +2718,9 @@ function returnToHome() {
   stopAudio();
   hideElement(questionScreen);
   hideElement(resultScreen);
+  if (rewardsScreen) {
+    hideElement(rewardsScreen);
+  }
   if (statsScreen) {
     hideElement(statsScreen);
   }
@@ -2652,6 +2733,9 @@ function restartQuiz() {
   stopAudio();
   resetHintUI();
   hideElement(resultScreen);
+  if (rewardsScreen) {
+    hideElement(rewardsScreen);
+  }
   if (statsScreen) {
     hideElement(statsScreen);
   }
