@@ -1094,12 +1094,9 @@ const DEFAULT_TIME_LIMITS = {
   hard: 12,
 };
 
-const getDifficultyRank = (difficulty) =>
-  difficultyOrder[difficulty] ?? difficultyOrder.medium;
-
-// Fonction pour mélanger les questions (Fisher-Yates shuffle)
-const shuffleQuestions = (questionsArray) => {
-  const shuffled = [...questionsArray];
+// Fonction pour mélanger un tableau (algorithme Fisher-Yates)
+const shuffleArray = (array) => {
+  const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -1107,37 +1104,53 @@ const shuffleQuestions = (questionsArray) => {
   return shuffled;
 };
 
-// Fonction pour mélanger les réponses d'une question tout en ajustant l'indice correct
+// Mélanger les questions
+const shuffleQuestions = (questions) => shuffleArray(questions);
+
+// Mélanger les réponses d'une question
 const shuffleAnswers = (question) => {
-  const answerIndices = Array.from({ length: question.answers.length }, (_, i) => i);
-  const shuffledIndices = [...answerIndices];
+  const answers = question.answers;
+  const correctIndex = question.correct;
+  const correctAnswer = answers[correctIndex];
   
-  // Mélanger les indices des réponses
-  for (let i = shuffledIndices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
-  }
+  // Créer un tableau d'indices et les mélanger
+  const indices = Array.from({ length: answers.length }, (_, i) => i);
+  const shuffledIndices = shuffleArray(indices);
   
-  // Créer un mapping ancien indice -> nouvel indice
-  const indexMapping = {};
-  shuffledIndices.forEach((oldIndex, newIndex) => {
-    indexMapping[oldIndex] = newIndex;
-  });
+  // Réorganiser les réponses selon les indices mélangés
+  const shuffledAnswers = shuffledIndices.map(i => answers[i]);
   
-  // Créer une copie de la question avec les réponses mélangées
-  const shuffledAnswers = shuffledIndices.map(oldIndex => question.answers[oldIndex]);
-  const newCorrectIndex = indexMapping[question.correct];
+  // Trouver le nouvel index de la réponse correcte
+  const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
   
   return {
     ...question,
     answers: shuffledAnswers,
-    correct: newCorrectIndex
+    correct: newCorrectIndex,
   };
 };
 
-const buildProgressiveQuestions = () => {
-  const sorted = questions
-    .map((question, index) => ({ ...question, _index: index }))
+const getDifficultyRank = (difficulty) =>
+  difficultyOrder[difficulty] ?? difficultyOrder.medium;
+
+const normalizeQuestion = (question) => {
+  const difficulty = question.difficulty || "medium";
+  const timeLimit = Number.isFinite(question.timeLimit)
+    ? question.timeLimit
+    : DEFAULT_TIME_LIMITS[difficulty] ?? DEFAULT_TIME_LIMITS.medium;
+  return {
+    ...question,
+    difficulty,
+    timeLimit,
+  };
+};
+
+const buildProgressiveQuestions = (questionSet = []) => {
+  const sorted = questionSet
+    .map((question, index) => ({
+      ...normalizeQuestion(question),
+      _index: index,
+    }))
     .sort((a, b) => {
       const diff =
         getDifficultyRank(a.difficulty) - getDifficultyRank(b.difficulty);
@@ -1214,9 +1227,17 @@ const currentQuestionIndexSpan = getElement("#current-question-index");
 const totalQuestionsSpan = getElement("#total-questions");
 
 // Init
-startBtn.addEventListener("click", startQuiz);
-nextBtn.addEventListener("click", nextQuestion);
-restartBtn.addEventListener("click", restartQuiz);
+if (startBtn) {
+  startBtn.addEventListener("click", startQuiz);
+} else {
+  console.error("startBtn not found");
+}
+if (nextBtn) {
+  nextBtn.addEventListener("click", nextQuestion);
+}
+if (restartBtn) {
+  restartBtn.addEventListener("click", restartQuiz);
+}
 if (playAudioBtn) {
   playAudioBtn.addEventListener("click", toggleAudioPlayback);
 }
