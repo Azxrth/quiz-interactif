@@ -1713,8 +1713,10 @@ function selectAnswer(index, btn) {
   if (index === q.correct) {
     score++;
     btn.classList.add("correct");
+    keepingScore.push("o")
   } else {
     btn.classList.add("wrong");
+    keepingScore.push("x")
   }
 
   recordQuestionStats({ isCorrect: index === q.correct, timedOut: false });
@@ -1749,6 +1751,7 @@ function endQuiz() {
   if (statsScreen) {
     showElement(statsScreen);
   }
+  recap();
 }
 
 function restartQuiz() {
@@ -1762,3 +1765,38 @@ function restartQuiz() {
 
   setText(bestScoreValue, bestScore);
 }
+
+//RECAP
+
+const keepingScore = [];
+
+function recap() {
+  const recap = Array.from(document.getElementsByClassName("recap"))[0];
+
+recap.setAttribute("display", "flex");
+recap.setAttribute("flex-direction", "column");
+
+for(let i=0; i<questions.length; i++) {
+const element = document.createElement("div"); // création container
+
+const answerAssess = document.createElement("span"); // B/M R Html
+answerAssess.classList.add("stat-label");
+if(keepingScore[i] == 'o') {
+  const answerAssessText = document.createTextNode("Bonne réponse"); // création texte B/M R
+  answerAssess.appendChild(answerAssessText); // mise du texte B/M R dans le span
+  
+const newContent = document.createTextNode(questions[i].text); 
+element.appendChild(newContent);
+element.appendChild(answerAssess)
+} else {
+  const answerAssessText = document.createTextNode("Mauvaise réponse");
+  answerAssess.appendChild(answerAssessText);
+const newContent = document.createTextNode(questions[i].text + "La réponse était : " + questions[i].answers[questions[i].correct]);
+element.appendChild(newContent);
+element.appendChild(answerAssess)
+}
+recap.appendChild(element);
+}
+
+}
+    
