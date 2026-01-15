@@ -48,6 +48,11 @@
     border-color var(--transition-fast);
 }
 
+html.dark-mode .theme-card__body {
+  background: #2a2a2a;
+  border-color: rgba(77, 184, 168, 0.2);
+}
+
 .theme-card__title {
   font-weight: 700;
   color: var(--color-ink);
@@ -65,9 +70,14 @@
 }
 
 .theme-card input:checked + .theme-card__body {
-  border-color: rgba(42, 157, 143, 0.6);
+  border-color: var(--color-secondary);
   background: rgba(42, 157, 143, 0.12);
   box-shadow: var(--shadow-sm);
+}
+
+html.dark-mode .theme-card input:checked + .theme-card__body {
+  border-color: var(--color-secondary);
+  background: rgba(77, 184, 168, 0.15);
 }
 
 .theme-label {
