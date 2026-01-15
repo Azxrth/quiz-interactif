@@ -1610,9 +1610,9 @@ const difficultyOrder = {
 };
 
 const DEFAULT_TIME_LIMITS = {
-  easy: 8,
-  medium: 10,
-  hard: 12,
+  easy: 30,
+  medium: 30,
+  hard: 30,
 };
 
 // Fonction pour mélanger un tableau (algorithme Fisher-Yates)
