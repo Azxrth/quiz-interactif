@@ -1094,6 +1094,42 @@ const DEFAULT_TIME_LIMITS = {
   hard: 12,
 };
 
+// Fonction pour mélanger un tableau (algorithme Fisher-Yates)
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+// Mélanger les questions
+const shuffleQuestions = (questions) => shuffleArray(questions);
+
+// Mélanger les réponses d'une question
+const shuffleAnswers = (question) => {
+  const answers = question.answers;
+  const correctIndex = question.correct;
+  const correctAnswer = answers[correctIndex];
+  
+  // Créer un tableau d'indices et les mélanger
+  const indices = Array.from({ length: answers.length }, (_, i) => i);
+  const shuffledIndices = shuffleArray(indices);
+  
+  // Réorganiser les réponses selon les indices mélangés
+  const shuffledAnswers = shuffledIndices.map(i => answers[i]);
+  
+  // Trouver le nouvel index de la réponse correcte
+  const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
+  
+  return {
+    ...question,
+    answers: shuffledAnswers,
+    correct: newCorrectIndex,
+  };
+};
+
 const getDifficultyRank = (difficulty) =>
   difficultyOrder[difficulty] ?? difficultyOrder.medium;
 
@@ -1109,8 +1145,8 @@ const normalizeQuestion = (question) => {
   };
 };
 
-const buildProgressiveQuestions = (questionSet = []) =>
-  questionSet
+const buildProgressiveQuestions = (questionSet = []) => {
+  const sorted = questionSet
     .map((question, index) => ({
       ...normalizeQuestion(question),
       _index: index,
@@ -1121,6 +1157,13 @@ const buildProgressiveQuestions = (questionSet = []) =>
       return diff || a._index - b._index;
     })
     .map(({ _index, ...question }) => question);
+  
+  // Mélanger les questions au début de chaque quiz
+  const shuffledQuestions = shuffleQuestions(sorted);
+  
+  // Mélanger les réponses pour chaque question
+  return shuffledQuestions.map(question => shuffleAnswers(question));
+};
 
 const TIME_TRIAL_DURATION = 240;
 const AUDIO_BASE_PATH = "../assets/audio";
@@ -1185,9 +1228,17 @@ const currentQuestionIndexSpan = getElement("#current-question-index");
 const totalQuestionsSpan = getElement("#total-questions");
 
 // Init
-startBtn.addEventListener("click", startQuiz);
-nextBtn.addEventListener("click", nextQuestion);
-restartBtn.addEventListener("click", restartQuiz);
+if (startBtn) {
+  startBtn.addEventListener("click", startQuiz);
+} else {
+  console.error("startBtn not found");
+}
+if (nextBtn) {
+  nextBtn.addEventListener("click", nextQuestion);
+}
+if (restartBtn) {
+  restartBtn.addEventListener("click", restartQuiz);
+}
 if (tweetBtn) {
   tweetBtn.addEventListener("click", tweetScore);
 }
