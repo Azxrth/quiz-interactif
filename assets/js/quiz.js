@@ -61,126 +61,7 @@ const themes = [
         answers: ["Paris", "Lyon", "Marseille", "Bordeaux"],
         correct: 0,
         difficulty: "easy",
-      },
-      {
-        text: "Quelle est la capitale de l'Italie ?",
-        answers: ["Rome", "Milan", "Naples", "Venise"],
-        correct: 0,
-        difficulty: "easy",
-      },
-      {
-        text: "Quelle est la monnaie du Japon ?",
-        answers: ["Yen", "Won", "Yuan", "Rouble"],
-        correct: 0,
-        difficulty: "easy",
-      },
-      {
-        text: "Dans quel continent se trouve le Sahara ?",
-        answers: ["Afrique", "Asie", "Amérique", "Europe"],
-        correct: 0,
-        difficulty: "easy",
-      },
-      {
-        text: "Combien y a-t-il de continents sur Terre ?",
-        answers: ["7", "5", "6", "8"],
-        correct: 0,
-        difficulty: "easy",
-      },
-      {
-        text: "Quel est le plus grand océan ?",
-        answers: ["Pacifique", "Atlantique", "Indien", "Arctique"],
-        correct: 0,
-        difficulty: "easy",
-      },
-      {
-        text: "Quel est le plus grand mammifère ?",
-        answers: ["Baleine bleue", "Éléphant d'Afrique", "Giraffe", "Hippopotame"],
-        correct: 0,
-        difficulty: "easy",
-      },
-      {
-        text: "Quel est le symbole chimique de l'eau ?",
-        answers: ["H2O", "O2", "CO2", "NaCl"],
-        correct: 0,
-        difficulty: "easy",
-      },
-      {
-        text: "Quelle est la capitale du Canada ?",
-        answers: ["Ottawa", "Toronto", "Vancouver", "Montréal"],
-        correct: 0,
-        difficulty: "medium",
-      },
-      {
-        text: "Quel pays a pour capitale Canberra ?",
-        answers: ["Australie", "Nouvelle-Zélande", "Canada", "Afrique du Sud"],
-        correct: 0,
-        difficulty: "medium",
-      },
-      {
-        text: "Dans quel pays se trouve la ville de Rio de Janeiro ?",
-        answers: ["Brésil", "Argentine", "Portugal", "Mexique"],
-        correct: 0,
-        difficulty: "medium",
-      },
-      {
-        text: "En quelle année l'homme a-t-il marché sur la Lune pour la première fois ?",
-        answers: ["1969", "1959", "1975", "1981"],
-        correct: 0,
-        difficulty: "medium",
-      },
-      {
-        text: "Quelle est la plus haute montagne du monde ?",
-        answers: ["Everest", "K2", "Kilimandjaro", "Mont Blanc"],
-        correct: 0,
-        difficulty: "medium",
-      },
-      {
-        text: "Quel est le plus petit des continents ?",
-        answers: ["Océanie", "Europe", "Antarctique", "Amérique du Sud"],
-        correct: 0,
-        difficulty: "medium",
-      },
-      {
-        text: "En quelle année a commencé la Première Guerre mondiale ?",
-        answers: ["1914", "1939", "1929", "1918"],
-        correct: 0,
-        difficulty: "medium",
-      },
-      {
-        text: "Quel courant océanique chaud influence le climat de l'Europe de l'Ouest ?",
-        answers: ["Gulf Stream", "El Niño", "Kuroshio", "Labrador"],
-        correct: 0,
-        difficulty: "hard",
-      },
-      {
-        text: "Quelle est la distance moyenne entre la Terre et le Soleil ?",
-        answers: [
-          "150 millions de km",
-          "15 millions de km",
-          "1,5 million de km",
-          "300 millions de km",
-        ],
-        correct: 0,
-        difficulty: "hard",
-      },
-      {
-        text: "Combien de chromosomes possède l'être humain ?",
-        answers: ["46", "23", "44", "48"],
-        correct: 0,
-        difficulty: "hard",
-      },
-      {
-        text: "Quel est le plus long os du corps humain ?",
-        answers: ["Fémur", "Tibia", "Humérus", "Radius"],
-        correct: 0,
-        difficulty: "hard",
-      },
-      {
-        text: "Quel est le symbole chimique de l'or ?",
-        answers: ["Au", "Ag", "O", "Gd"],
-        correct: 0,
-        difficulty: "hard",
-      },
+      }
     ],
   },
   {
@@ -1112,17 +993,17 @@ const shuffleAnswers = (question) => {
   const answers = question.answers;
   const correctIndex = question.correct;
   const correctAnswer = answers[correctIndex];
-  
+
   // Créer un tableau d'indices et les mélanger
   const indices = Array.from({ length: answers.length }, (_, i) => i);
   const shuffledIndices = shuffleArray(indices);
-  
+
   // Réorganiser les réponses selon les indices mélangés
   const shuffledAnswers = shuffledIndices.map(i => answers[i]);
-  
+
   // Trouver le nouvel index de la réponse correcte
   const newCorrectIndex = shuffledAnswers.indexOf(correctAnswer);
-  
+
   return {
     ...question,
     answers: shuffledAnswers,
@@ -1157,10 +1038,10 @@ const buildProgressiveQuestions = (questionSet = []) => {
       return diff || a._index - b._index;
     })
     .map(({ _index, ...question }) => question);
-  
+
   // Mélanger les questions au début de chaque quiz
   const shuffledQuestions = shuffleQuestions(sorted);
-  
+
   // Mélanger les réponses pour chaque question
   return shuffledQuestions.map(question => shuffleAnswers(question));
 };
@@ -1776,29 +1657,42 @@ function recap() {
   const recap = Array.from(document.getElementsByClassName("recap"))[0];
   let theme = getSelectedTheme();
 
-recap.setAttribute("display", "flex");
-recap.setAttribute("flex-direction", "column");
+  recap.setAttribute("display", "flex");
+  recap.setAttribute("flex-direction", "column");
 
-for(let i=0; i<theme.questions.length; i++) {
-const element = document.createElement("div"); // création container
+  for (let i = 0; i < theme.questions.length; i++) {
+    const ligne = document.createElement("div"); // création container
 
-const answerAssess = document.createElement("span"); // B/M R Html
-answerAssess.classList.add("stat-label");
-if(keepingScore[i] == 'o') {
-  const answerAssessText = document.createTextNode("Bonne réponse");
-  answerAssess.appendChild(answerAssessText);
-const newContent = document.createTextNode(theme.questions[i].text); 
-element.appendChild(newContent);
-element.appendChild(answerAssess)
-} else {
-  const answerAssessText = document.createTextNode("Mauvaise réponse");
-  answerAssess.appendChild(answerAssessText);
-const newContent = document.createTextNode(theme.questions[i].text + "La réponse était : " + theme.questions[i].answers[theme.questions[i].correct]);
-element.appendChild(newContent);
-element.appendChild(answerAssess)
-}
-recap.appendChild(element);
-}
+    const goodOrBad = document.createElement("span"); // B/M R Html
+    goodOrBad.classList.add("stat-label");
+    if (keepingScore[i] == 'o') {
+      const goodOrBadText = document.createTextNode("Bonne réponse");
+      goodOrBad.appendChild(goodOrBadText);
+      // goodOrBadText.classList.add("stats-question");
+      goodOrBad.classList.add("stats-badge");
+      goodOrBad.classList.add("stats-badge--good");
+      const question = document.createTextNode(theme.questions[i].text);
+      ligne.appendChild(question);
+      ligne.appendChild(goodOrBad);
+    } else {
+      const goodOrBadText = document.createTextNode("Mauvaise réponse");
+      goodOrBad.appendChild(goodOrBadText);
+      // goodOrBad.classList.add("stats-question")
+      goodOrBad.classList.add("stats-badge");
+      goodOrBad.classList.add("stats-badge--bad");
+      const question = document.createElement("span");
+      const questionText = document.createTextNode(theme.questions[i].text); question.appendChild(questionText);
+      question.appendChild(questionText);
+      const answer = document.createElement("span");
+      const answerText = document.createTextNode("  La réponse était : " + theme.questions[i].answers[theme.questions[i].correct]);
+      answer.appendChild(answerText);
+
+      ligne.appendChild(question);
+      ligne.appendChild(goodOrBad);
+      ligne.appendChild(answer);
+
+    }
+    recap.appendChild(ligne);
+  }
 
 }
-    
