@@ -412,8 +412,46 @@ const difficultyOrder = {
 const getDifficultyRank = (difficulty) =>
   difficultyOrder[difficulty] ?? difficultyOrder.medium;
 
-const buildProgressiveQuestions = () =>
-  questions
+// Fonction pour mélanger les questions (Fisher-Yates shuffle)
+const shuffleQuestions = (questionsArray) => {
+  const shuffled = [...questionsArray];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+// Fonction pour mélanger les réponses d'une question tout en ajustant l'indice correct
+const shuffleAnswers = (question) => {
+  const answerIndices = Array.from({ length: question.answers.length }, (_, i) => i);
+  const shuffledIndices = [...answerIndices];
+  
+  // Mélanger les indices des réponses
+  for (let i = shuffledIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+  }
+  
+  // Créer un mapping ancien indice -> nouvel indice
+  const indexMapping = {};
+  shuffledIndices.forEach((oldIndex, newIndex) => {
+    indexMapping[oldIndex] = newIndex;
+  });
+  
+  // Créer une copie de la question avec les réponses mélangées
+  const shuffledAnswers = shuffledIndices.map(oldIndex => question.answers[oldIndex]);
+  const newCorrectIndex = indexMapping[question.correct];
+  
+  return {
+    ...question,
+    answers: shuffledAnswers,
+    correct: newCorrectIndex
+  };
+};
+
+const buildProgressiveQuestions = () => {
+  const sorted = questions
     .map((question, index) => ({ ...question, _index: index }))
     .sort((a, b) => {
       const diff =
@@ -421,6 +459,13 @@ const buildProgressiveQuestions = () =>
       return diff || a._index - b._index;
     })
     .map(({ _index, ...question }) => question);
+  
+  // Mélanger les questions au début de chaque quiz
+  const shuffledQuestions = shuffleQuestions(sorted);
+  
+  // Mélanger les réponses pour chaque question
+  return shuffledQuestions.map(question => shuffleAnswers(question));
+};
 
 const TIME_TRIAL_DURATION = 240;
 const AUDIO_BASE_PATH = "../assets/audio";
