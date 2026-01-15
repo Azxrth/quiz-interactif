@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../assets/css/style.css" />
   </head>
   <body>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Basculer le mode sombre"></button>
     <main class="app">
       <header class="hero">
         <p class="eyebrow">Quiz interactif</p>
@@ -113,6 +114,10 @@
       </p>
         <div class="settings">
           <label class="mode-toggle">
+            <input type="checkbox" id="flashcard-toggle" />
+            Mode Flashcard (entraînement sans timer ni score)
+          </label>
+          <label class="mode-toggle">
             <input type="checkbox" id="time-trial-toggle" />
             Mode contre-la-montre (temps global)
           </label>
@@ -186,12 +191,17 @@
       </section>
 
       <section id="result-screen" class="card screen" style="display: none">
-        <h2>Résultat final</h2>
-        <p id="score-text" class="score-final"></p>
-        <p class="score-line">
-          Meilleur score : <span id="best-score-end">0</span>
-        </p>
-        <button id="restart-btn" class="btn btn-primary">Recommencer</button>
+        <h2 class="result-title">Résultat final</h2>
+        <div class="result-scores">
+          <p id="score-text" class="score-final"></p>
+          <p class="score-line">
+            Meilleur score : <span id="best-score-end">0</span>
+          </p>
+        </div>
+        <div class="result-actions">
+          <button id="restart-btn" class="btn btn-primary">Recommencer</button>
+          <button id="tweet-btn" class="btn btn-secondary">Partager sur Twitter</button>
+        </div>
       </section>
 
       <section id="stats-screen" class="card screen" style="display: none">
@@ -215,9 +225,15 @@
         </div>
         <div id="stats-list" class="stats-list"></div>
       </section>
+
+      <section class="recap">
+
+      </section>
+
     </main>
 
     <script src="../assets/js/quiz.js"></script>
     <script src="../assets/js/animations.js"></script>
+    <script src="../assets/js/theme-toggle.js"></script>
   </body>
 </html>

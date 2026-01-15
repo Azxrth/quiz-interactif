@@ -1275,6 +1275,7 @@ let questionTimerId = null;
 let globalTimerId = null;
 let globalTimeLeft = 0;
 let isTimeTrial = false;
+let isFlashcardMode = false;
 
 // DOM Elements
 const introScreen = getElement("#intro-screen");
@@ -1289,8 +1290,10 @@ const answersDiv = getElement("#answers");
 const nextBtn = getElement("#next-btn");
 const startBtn = getElement("#start-btn");
 const restartBtn = getElement("#restart-btn");
+const tweetBtn = getElement("#tweet-btn");
 const timeTrialToggle = getElement("#time-trial-toggle");
 const timeTrialDurationInput = getElement("#time-trial-duration");
+const flashcardToggle = getElement("#flashcard-toggle");
 const timerDiv = getElement("#timer-div");
 const globalTimerDiv = getElement("#global-timer-div");
 const globalTimeLeftSpan = getElement("#global-time-left");
@@ -1325,6 +1328,9 @@ if (nextBtn) {
 }
 if (restartBtn) {
   restartBtn.addEventListener("click", restartQuiz);
+}
+if (tweetBtn) {
+  tweetBtn.addEventListener("click", tweetScore);
 }
 if (playAudioBtn) {
   playAudioBtn.addEventListener("click", toggleAudioPlayback);
@@ -1780,11 +1786,15 @@ function startQuiz() {
   resetStats();
   currentQuestionIndex = 0;
   score = 0;
-  isTimeTrial = timeTrialToggle ? timeTrialToggle.checked : false;
+  isFlashcardMode = flashcardToggle ? flashcardToggle.checked : false;
+  isTimeTrial = !isFlashcardMode && timeTrialToggle ? timeTrialToggle.checked : false;
 
   setText(totalQuestionsSpan, activeQuestions.length);
 
-  if (isTimeTrial) {
+  if (isFlashcardMode) {
+    hideElement(globalTimerDiv);
+    hideElement(timerDiv);
+  } else if (isTimeTrial) {
     globalTimeLeft = getTimeTrialDuration();
     setText(globalTimeLeftSpan, globalTimeLeft);
     showElement(globalTimerDiv);
@@ -1826,9 +1836,13 @@ function showQuestion() {
     answersDiv.appendChild(btn);
   });
 
-  nextBtn.classList.add("hidden");
+  if (isFlashcardMode) {
+    nextBtn.classList.remove("hidden");
+  } else {
+    nextBtn.classList.add("hidden");
+  }
 
-  if (isTimeTrial) {
+  if (isTimeTrial || isFlashcardMode) {
     return;
   }
 
@@ -1849,10 +1863,14 @@ function selectAnswer(index, btn) {
 
   const q = activeQuestions[currentQuestionIndex];
   if (index === q.correct) {
-    score++;
+    if (!isFlashcardMode) {
+      score++;
+    }
     btn.classList.add("correct");
+    keepingScore.push("o")
   } else {
     btn.classList.add("wrong");
+    keepingScore.push("x")
   }
 
   recordQuestionStats({ isCorrect: index === q.correct, timedOut: false });
@@ -1877,17 +1895,22 @@ function endQuiz() {
   hideElement(questionScreen);
   showElement(resultScreen);
 
-  updateScoreDisplay(scoreText, score, activeQuestions.length);
-
-  if (score > bestScore) {
-    bestScore = score;
-    saveToLocalStorage("bestScore", bestScore);
+  if (isFlashcardMode) {
+    scoreText.textContent = "Entraînement terminé !";
+    setText(bestScoreEnd, bestScore);
+  } else {
+    updateScoreDisplay(scoreText, score, activeQuestions.length);
+    if (score > bestScore) {
+      bestScore = score;
+      saveToLocalStorage("bestScore", bestScore);
+    }
+    setText(bestScoreEnd, bestScore);
   }
-  setText(bestScoreEnd, bestScore);
   renderStats();
   if (statsScreen) {
     showElement(statsScreen);
   }
+  recap();
 }
 
 function restartQuiz() {
@@ -1901,4 +1924,48 @@ function restartQuiz() {
   showElement(introScreen);
 
   setText(bestScoreValue, bestScore);
+}
+
+function tweetScore() {
+  const totalQuestions = activeQuestions.length;
+  const tweetText = `J'ai fait un score de ${score}/${totalQuestions} sur le Quiz Dynamique ! 🎯`;
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    tweetText
+  )}`;
+  window.open(tweetUrl, "_blank");
+}
+
+const keepingScore = [];
+
+function recap() {
+  const recap = Array.from(document.getElementsByClassName("recap"))[0];
+  const theme = getSelectedTheme();
+
+  recap.setAttribute("display", "flex");
+  recap.setAttribute("flex-direction", "column");
+
+  for (let i = 0; i < theme.questions.length; i++) {
+    const element = document.createElement("div"); // création container
+
+    const answerAssess = document.createElement("span"); // B/M R Html
+    answerAssess.classList.add("stat-label");
+    if (keepingScore[i] == "o") {
+      const answerAssessText = document.createTextNode("Bonne réponse");
+      answerAssess.appendChild(answerAssessText);
+      const newContent = document.createTextNode(theme.questions[i].text);
+      element.appendChild(newContent);
+      element.appendChild(answerAssess);
+    } else {
+      const answerAssessText = document.createTextNode("Mauvaise réponse");
+      answerAssess.appendChild(answerAssessText);
+      const newContent = document.createTextNode(
+        theme.questions[i].text +
+          "La réponse était : " +
+          theme.questions[i].answers[theme.questions[i].correct]
+      );
+      element.appendChild(newContent);
+      element.appendChild(answerAssess);
+    }
+    recap.appendChild(element);
+  }
 }

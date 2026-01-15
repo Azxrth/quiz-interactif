@@ -16,6 +16,11 @@ body {
     linear-gradient(140deg, #f4efe7 0%, #fff6ea 55%, #f9efe1 100%);
   overflow-x: hidden;
   position: relative;
+  transition: background var(--transition-base);
+}
+
+html.dark-mode body {
+  background: #111111;
 }
 
 body::after {
@@ -27,6 +32,11 @@ body::after {
   opacity: 0.12;
   pointer-events: none;
   z-index: 0;
+}
+
+html.dark-mode body::after {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  opacity: 0.04;
 }
 
 h1,
