@@ -1190,6 +1190,7 @@ let questionTimerId = null;
 let globalTimerId = null;
 let globalTimeLeft = 0;
 let isTimeTrial = false;
+let isFlashcardMode = false;
 
 // DOM Elements
 const introScreen = getElement("#intro-screen");
@@ -1206,6 +1207,7 @@ const startBtn = getElement("#start-btn");
 const restartBtn = getElement("#restart-btn");
 const timeTrialToggle = getElement("#time-trial-toggle");
 const timeTrialDurationInput = getElement("#time-trial-duration");
+const flashcardToggle = getElement("#flashcard-toggle");
 const timerDiv = getElement("#timer-div");
 const globalTimerDiv = getElement("#global-timer-div");
 const globalTimeLeftSpan = getElement("#global-time-left");
@@ -1643,11 +1645,15 @@ function startQuiz() {
   resetStats();
   currentQuestionIndex = 0;
   score = 0;
-  isTimeTrial = timeTrialToggle ? timeTrialToggle.checked : false;
+  isFlashcardMode = flashcardToggle ? flashcardToggle.checked : false;
+  isTimeTrial = !isFlashcardMode && timeTrialToggle ? timeTrialToggle.checked : false;
 
   setText(totalQuestionsSpan, activeQuestions.length);
 
-  if (isTimeTrial) {
+  if (isFlashcardMode) {
+    hideElement(globalTimerDiv);
+    hideElement(timerDiv);
+  } else if (isTimeTrial) {
     globalTimeLeft = getTimeTrialDuration();
     setText(globalTimeLeftSpan, globalTimeLeft);
     showElement(globalTimerDiv);
@@ -1688,9 +1694,13 @@ function showQuestion() {
     answersDiv.appendChild(btn);
   });
 
-  nextBtn.classList.add("hidden");
+  if (isFlashcardMode) {
+    nextBtn.classList.remove("hidden");
+  } else {
+    nextBtn.classList.add("hidden");
+  }
 
-  if (isTimeTrial) {
+  if (isTimeTrial || isFlashcardMode) {
     return;
   }
 
@@ -1711,7 +1721,9 @@ function selectAnswer(index, btn) {
 
   const q = activeQuestions[currentQuestionIndex];
   if (index === q.correct) {
-    score++;
+    if (!isFlashcardMode) {
+      score++;
+    }
     btn.classList.add("correct");
     keepingScore.push("o")
   } else {
@@ -1740,13 +1752,17 @@ function endQuiz() {
   hideElement(questionScreen);
   showElement(resultScreen);
 
-  updateScoreDisplay(scoreText, score, activeQuestions.length);
-
-  if (score > bestScore) {
-    bestScore = score;
-    saveToLocalStorage("bestScore", bestScore);
+  if (isFlashcardMode) {
+    scoreText.textContent = "Entraînement terminé !";
+    setText(bestScoreEnd, bestScore);
+  } else {
+    updateScoreDisplay(scoreText, score, activeQuestions.length);
+    if (score > bestScore) {
+      bestScore = score;
+      saveToLocalStorage("bestScore", bestScore);
+    }
+    setText(bestScoreEnd, bestScore);
   }
-  setText(bestScoreEnd, bestScore);
   renderStats();
   if (statsScreen) {
     showElement(statsScreen);
