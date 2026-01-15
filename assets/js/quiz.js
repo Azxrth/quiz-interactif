@@ -1161,6 +1161,7 @@ const answersDiv = getElement("#answers");
 const nextBtn = getElement("#next-btn");
 const startBtn = getElement("#start-btn");
 const restartBtn = getElement("#restart-btn");
+const tweetBtn = getElement("#tweet-btn");
 const timeTrialToggle = getElement("#time-trial-toggle");
 const timeTrialDurationInput = getElement("#time-trial-duration");
 const timerDiv = getElement("#timer-div");
@@ -1187,6 +1188,9 @@ const totalQuestionsSpan = getElement("#total-questions");
 startBtn.addEventListener("click", startQuiz);
 nextBtn.addEventListener("click", nextQuestion);
 restartBtn.addEventListener("click", restartQuiz);
+if (tweetBtn) {
+  tweetBtn.addEventListener("click", tweetScore);
+}
 if (playAudioBtn) {
   playAudioBtn.addEventListener("click", toggleAudioPlayback);
 }
@@ -1710,4 +1714,11 @@ function restartQuiz() {
   showElement(introScreen);
 
   setText(bestScoreValue, bestScore);
+}
+
+function tweetScore() {
+  const totalQuestions = activeQuestions.length;
+  const tweetText = `J'ai fait un score de ${score}/${totalQuestions} sur le Quiz Dynamique ! 🎯`;
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+  window.open(tweetUrl, '_blank');
 }
