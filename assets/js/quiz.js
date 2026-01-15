@@ -5,10 +5,23 @@ const showElement = (element) => (element.style.display = "");
 const hideElement = (element) => (element.style.display = "none");
 const setText = (element, text) => (element.textContent = text);
 
-const createAnswerButton = (text, onClick) => {
+const createAnswerButton = (answer, onClick) => {
   const btn = document.createElement("button");
   btn.classList.add("answer-btn");
-  btn.textContent = text;
+  if (typeof answer === "string") {
+    btn.textContent = answer;
+  } else if (answer && answer.imageSrc) {
+    btn.classList.add("answer-btn--image");
+    const img = document.createElement("img");
+    img.src = answer.imageSrc;
+    img.alt = answer.label || "Réponse";
+    img.loading = "lazy";
+    const label = document.createElement("span");
+    label.classList.add("sr-only");
+    label.textContent = answer.label || "Réponse";
+    btn.appendChild(img);
+    btn.appendChild(label);
+  }
   btn.addEventListener("click", onClick);
   return btn;
 };
@@ -1075,6 +1088,514 @@ const themes = [
       },
     ],
   },
+  {
+    id: "image-quiz",
+    label: "Quiz avec image",
+    answerType: "image",
+    disableAudio: true,
+    questions: [
+      {
+        text: "Quelle image montre le Taj Mahal ?",
+        promptImage: "",
+        promptAlt: "Monument à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Taj-Mahal.jpg",
+            label: "Taj Mahal",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Opéra-de-Sydney.jpg",
+            label: "Opéra de Sydney",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Colisée.jpg",
+            label: "Colisée",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Tour Eiffel.jpg",
+            label: "Tour Eiffel",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quel drapeau est celui du Canada ?",
+        promptImage: "",
+        promptAlt: "Drapeau à reconnaître",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/flag-canada.jpg",
+            label: "Canada",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/flag_america.jpg",
+            label: "États-Unis",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/flag-united-kingdom.jpg",
+            label: "Royaume-Uni",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/flag-australia.jpg",
+            label: "Australie",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quelle image montre un panda géant ?",
+        promptImage: "",
+        promptAlt: "Animal à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Panda-géant.jpg",
+            label: "Panda géant",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Koala.jpg",
+            label: "Koala",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Ours-polaire.jpg",
+            label: "Ours polaire",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Raton-laveur.jpg",
+            label: "Raton laveur",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quelle image montre un kiwi ?",
+        promptImage: "",
+        promptAlt: "Fruit à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Kiwi.jpg",
+            label: "Kiwi",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Mangue.jpg",
+            label: "Mangue",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Papaye.jpg",
+            label: "Papaye",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Avocat.jpg",
+            label: "Avocat",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quelle image montre Saturne ?",
+        promptImage: "",
+        promptAlt: "Planète à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Saturne.jpg",
+            label: "Saturne",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Mars.jpg",
+            label: "Mars",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Neptune.jpg",
+            label: "Neptune",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Jupiter.jpg",
+            label: "Jupiter",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quelle photo correspond à l'Italie ?",
+        promptImage: "",
+        promptAlt: "Carte à reconnaître",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Italie.jpg",
+            label: "Italie",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Grèce.jpg",
+            label: "Grèce",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Espagne.jpg",
+            label: "Espagne",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Portugal.jpg",
+            label: "Portugal",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quel image correspond à Netflix ?",
+        promptImage: "",
+        promptAlt: "Logo à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Netflix.jpg",
+            label: "Netflix",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Spotify.jpg",
+            label: "Spotify",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/YouTube Music.jpg",
+            label: "YouTube Music",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Twitch.jpg",
+            label: "Twitch",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quel monument religieux correspond à la basilique Saint-Pierre ?",
+        promptImage: "",
+        promptAlt: "Monument religieux à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Basilique Saint-Pierre.jpg",
+            label: "Basilique Saint-Pierre",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Cathédrale Notre-Dame.jpg",
+            label: "Cathédrale Notre-Dame",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Sagrada Família.jpg",
+            label: "Sagrada Família",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Mosquée bleue.jpg",
+            label: "Mosquée bleue",
+          },
+        ],
+        correct: 0,
+        difficulty: "easy",
+      },
+      {
+        text: "Quelle ville correspond à New York ?",
+        promptImage: "",
+        promptAlt: "Ville à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/New York.jpg",
+            label: "New York",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Paris.jpg",
+            label: "Paris",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Londres.jpg",
+            label: "Londres",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Tokyo.jpg",
+            label: "Tokyo",
+          },
+        ],
+        correct: 0,
+        difficulty: "medium",
+      },
+      {
+        text: "Quel sport correspond au basketball ?",
+        promptImage: "",
+        promptAlt: "Sport à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Basketball.jpg",
+            label: "Basketball",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Football.jpg",
+            label: "Football",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Tennis.jpg",
+            label: "Tennis",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Rugby.jpg",
+            label: "Rugby",
+          },
+        ],
+        correct: 0,
+        difficulty: "medium",
+      },
+      {
+        text: "Quel instrument est un saxophone ?",
+        promptImage: "",
+        promptAlt: "Instrument à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Saxophone.jpg",
+            label: "Saxophone",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Trompette.jpg",
+            label: "Trompette",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Clarinette.jpg",
+            label: "Clarinette",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Flûte traversière.jpg",
+            label: "Flûte traversière",
+          },
+        ],
+        correct: 0,
+        difficulty: "medium",
+      },
+      {
+        text: "Quel paysage correspond au Grand Canyon ?",
+        promptImage: "",
+        promptAlt: "Paysage à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Grand Canyon.jpg",
+            label: "Grand Canyon",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Chutes du Niagara.jpg",
+            label: "Chutes du Niagara",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Désert du Sahara.jpg",
+            label: "Désert du Sahara",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Mont Fuji.jpg",
+            label: "Mont Fuji",
+          },
+        ],
+        correct: 0,
+        difficulty: "medium",
+      },
+      {
+        text: "Quel véhicule est un bus londonien ?",
+        promptImage: "",
+        promptAlt: "Véhicule à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Bus londonien.jpg",
+            label: "Bus londonien",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Tramway.jpg",
+            label: "Tramway",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Taxi new-yorkais.jpg",
+            label: "Taxi new-yorkais",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Métro parisien.jpg",
+            label: "Métro parisien",
+          },
+        ],
+        correct: 0,
+        difficulty: "medium",
+      },
+      {
+        text: "Quel image correspond au surf ?",
+        promptImage: "",
+        promptAlt: "Sport nautique à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Surf.jpg",
+            label: "Surf",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Kayak.jpg",
+            label: "Kayak",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Plongée.jpg",
+            label: "Plongée",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Voile.jpg",
+            label: "Voile",
+          },
+        ],
+        correct: 0,
+        difficulty: "medium",
+      },
+      {
+        text: "Quel bâtiment est le Burj Khalifa ?",
+        promptImage: "",
+        promptAlt: "Bâtiment à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Burj Khalifa.jpg",
+            label: "Burj Khalifa",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Empire State Building.jpg",
+            label: "Empire State Building",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Tour Shanghai.jpg",
+            label: "Tour Shanghai",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Willis Tower.jpg",
+            label: "Willis Tower",
+          },
+        ],
+        correct: 0,
+        difficulty: "medium",
+      },
+      {
+        text: "Quel image correspond à Tesla ?",
+        promptImage: "",
+        promptAlt: "Logo automobile à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Tesla.jpg",
+            label: "Tesla",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/BMW.jpg",
+            label: "BMW",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Audi.jpg",
+            label: "Audi",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Mercedes.jpg",
+            label: "Mercedes",
+          },
+        ],
+        correct: 0,
+        difficulty: "hard",
+      },
+      {
+        text: "Quel site historique correspond au Machu Picchu ?",
+        promptImage: "",
+        promptAlt: "Site historique à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Machu Picchu.jpg",
+            label: "Machu Picchu",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Angkor Wat.jpg",
+            label: "Angkor Wat",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Petra.jpg",
+            label: "Petra",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Acropole d'Athènes.jpg",
+            label: "Acropole d'Athènes",
+          },
+        ],
+        correct: 0,
+        difficulty: "hard",
+      },
+      {
+        text: "Quelle image est un macaron ?",
+        promptImage: "",
+        promptAlt: "Dessert à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Macaron.jpg",
+            label: "Macaron",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Éclair.jpg",
+            label: "Éclair",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Tiramisu.jpg",
+            label: "Tiramisu",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Baklava.jpg",
+            label: "Baklava",
+          },
+        ],
+        correct: 0,
+        difficulty: "hard",
+      },
+      {
+        text: "Quel est ce mouvement artistique ?",
+        promptImage: "",
+        promptAlt: "Œuvre artistique à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Impressionnisme.jpg",
+            label: "Impressionnisme",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Surréalisme.jpg",
+            label: "Surréalisme",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Cubisme.jpg",
+            label: "Cubisme",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Baroque.jpg",
+            label: "Baroque",
+          },
+        ],
+        correct: 0,
+        difficulty: "hard",
+      },
+      {
+        text: "Quel est ce symbole national ?",
+        promptImage: "",
+        promptAlt: "Symbole national à identifier",
+        answers: [
+          {
+            imageSrc: "../assets/images/quiz-image/Statue de la Liberté.jpg",
+            label: "Statue de la Liberté",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Christ Rédempteur.jpg",
+            label: "Christ Rédempteur",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Big Ben.jpg",
+            label: "Big Ben",
+          },
+          {
+            imageSrc: "../assets/images/quiz-image/Mont Rushmore.jpg",
+            label: "Mont Rushmore",
+          },
+        ],
+        correct: 0,
+        difficulty: "hard",
+      },
+    ],
+  },
 ];
 
 const themesById = themes.reduce((acc, theme) => {
@@ -1215,6 +1736,9 @@ const globalTimeLeftSpan = getElement("#global-time-left");
 const progressFill = getElement("#progress-fill");
 const themeLabel = getElement("#theme-label");
 const themeInputs = document.querySelectorAll('input[name="quiz-theme"]');
+const questionMedia = getElement("#question-media");
+const questionImage = getElement("#question-image");
+const questionActions = getElement("#question-actions");
 const playAudioBtn = getElement("#play-audio-btn");
 const audioStatus = getElement("#audio-status");
 const statsScreen = getElement("#stats-screen");
@@ -1266,6 +1790,21 @@ const updateProgressBar = () => {
   const percent = total ? Math.round((current / total) * 100) : 0;
   progressFill.style.width = `${percent}%`;
 };
+
+const isImageQuestion = (question) =>
+  Boolean(
+    (question && question.promptImage) ||
+      question?.answerType === "image" ||
+      currentTheme?.answerType === "image"
+  );
+
+const isAudioDisabledForQuestion = (question) =>
+  Boolean(
+    currentTheme?.disableAudio ||
+      question?.disableAudio ||
+      question?.answerType === "image" ||
+      currentTheme?.answerType === "image"
+  );
 
 const getSelectedTheme = () => {
   const selectedInput = Array.from(themeInputs).find((input) => input.checked);
@@ -1453,6 +1992,14 @@ const prepareAudioForQuestion = () => {
     updateAudioUI({ playing: false, available: false, status: "" });
     return;
   }
+  const disableAudio = isAudioDisabledForQuestion(q);
+  if (questionActions) {
+    questionActions.classList.toggle("hidden", disableAudio);
+  }
+  if (disableAudio) {
+    updateAudioUI({ playing: false, available: false, status: "" });
+    return;
+  }
   if (USE_SPEECH_ONLY) {
     const speechAvailable = hasSpeechSupport();
     updateAudioUI({
@@ -1494,6 +2041,10 @@ function toggleAudioPlayback() {
   }
   const q = activeQuestions[currentQuestionIndex];
   if (!q) {
+    return;
+  }
+  if (isAudioDisabledForQuestion(q)) {
+    updateAudioUI({ playing: false, available: false, status: "" });
     return;
   }
   if (USE_SPEECH_ONLY) {
@@ -1647,6 +2198,7 @@ function startQuiz() {
   activeQuestions = buildProgressiveQuestions(currentTheme.questions);
   updateThemeLabel(currentTheme);
   resetStats();
+  keepingScore.length = 0;
   currentQuestionIndex = 0;
   score = 0;
   isFlashcardMode = flashcardToggle ? flashcardToggle.checked : false;
@@ -1690,6 +2242,20 @@ function showQuestion() {
   setText(currentQuestionIndexSpan, currentQuestionIndex + 1);
   updateProgressBar();
   questionStartTime = Date.now();
+  const isImage = isImageQuestion(q);
+  const promptSrc = isImage ? q.promptImage : "";
+  if (questionMedia && questionImage) {
+    if (promptSrc) {
+      questionMedia.classList.remove("hidden");
+      questionImage.src = promptSrc;
+      questionImage.alt = q.promptAlt || q.text || "Illustration de la question";
+    } else {
+      questionMedia.classList.add("hidden");
+      questionImage.src = "";
+      questionImage.alt = "";
+    }
+  }
+  answersDiv.classList.toggle("answers--image", isImage);
   prepareAudioForQuestion();
 
   answersDiv.innerHTML = "";
@@ -1800,11 +2366,15 @@ const keepingScore = [];
 function recap() {
   const recap = Array.from(document.getElementsByClassName("recap"))[0];
   const theme = getSelectedTheme();
+  const recapQuestions = activeQuestions.length ? activeQuestions : theme.questions;
+  const formatAnswer = (answer) =>
+    typeof answer === "string" ? answer : answer?.label || "Réponse";
 
   recap.setAttribute("display", "flex");
   recap.setAttribute("flex-direction", "column");
+  recap.innerHTML = "";
 
-  for (let i = 0; i < theme.questions.length; i++) {
+  for (let i = 0; i < recapQuestions.length; i++) {
     const element = document.createElement("div"); // création container
 
     const answerAssess = document.createElement("span"); // B/M R Html
@@ -1812,16 +2382,17 @@ function recap() {
     if (keepingScore[i] == "o") {
       const answerAssessText = document.createTextNode("Bonne réponse");
       answerAssess.appendChild(answerAssessText);
-      const newContent = document.createTextNode(theme.questions[i].text);
+      const newContent = document.createTextNode(recapQuestions[i].text);
       element.appendChild(newContent);
       element.appendChild(answerAssess);
     } else {
       const answerAssessText = document.createTextNode("Mauvaise réponse");
       answerAssess.appendChild(answerAssessText);
+      const answerLabel = formatAnswer(
+        recapQuestions[i].answers[recapQuestions[i].correct]
+      );
       const newContent = document.createTextNode(
-        theme.questions[i].text +
-          "La réponse était : " +
-          theme.questions[i].answers[theme.questions[i].correct]
+        `${recapQuestions[i].text} La réponse était : ${answerLabel}`
       );
       element.appendChild(newContent);
       element.appendChild(answerAssess);

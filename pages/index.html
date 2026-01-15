@@ -107,6 +107,15 @@
               </span>
             </span>
           </label>
+          <label class="theme-card">
+            <input type="radio" name="quiz-theme" value="image-quiz" />
+            <span class="theme-card__body">
+              <span class="theme-card__title">Quiz avec image</span>
+              <span class="theme-card__desc">
+                Analyse visuelle et culture générale en images.
+              </span>
+            </span>
+          </label>
         </div>
       </div>
       <p class="score-line">
@@ -158,8 +167,11 @@
             Temps restant : <span id="time-left">0</span>s
           </div>
         </div>
+        <div id="question-media" class="question-media hidden">
+          <img id="question-image" src="" alt="" />
+        </div>
         <p id="question-text" class="question"></p>
-        <div class="question-actions">
+        <div id="question-actions" class="question-actions">
           <button
             id="play-audio-btn"
             class="btn btn-secondary btn-audio"
