@@ -1768,29 +1768,32 @@ function restartQuiz() {
 
 //RECAP
 
+//=> récupérer théme getSelectedTheme
+
 const keepingScore = [];
 
 function recap() {
   const recap = Array.from(document.getElementsByClassName("recap"))[0];
+  let theme = getSelectedTheme();
 
 recap.setAttribute("display", "flex");
 recap.setAttribute("flex-direction", "column");
 
-for(let i=0; i<questions.length; i++) {
+for(let i=0; i<theme.questions.length; i++) {
 const element = document.createElement("div"); // création container
 
 const answerAssess = document.createElement("span"); // B/M R Html
 answerAssess.classList.add("stat-label");
 if(keepingScore[i] == 'o') {
   const answerAssessText = document.createTextNode("Bonne réponse");
-  
-const newContent = document.createTextNode(questions[i].text); 
+  answerAssess.appendChild(answerAssessText);
+const newContent = document.createTextNode(theme.questions[i].text); 
 element.appendChild(newContent);
 element.appendChild(answerAssess)
 } else {
   const answerAssessText = document.createTextNode("Mauvaise réponse");
   answerAssess.appendChild(answerAssessText);
-const newContent = document.createTextNode(questions[i].text + "La réponse était : " + questions[i].answers[questions[i].correct]);
+const newContent = document.createTextNode(theme.questions[i].text + "La réponse était : " + theme.questions[i].answers[theme.questions[i].correct]);
 element.appendChild(newContent);
 element.appendChild(answerAssess)
 }
