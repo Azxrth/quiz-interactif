@@ -594,6 +594,11 @@ html.dark-mode .mode-config input {
   gap: 8px;
 }
 
+html.dark-mode .stat-card {
+  background: #2a2a2a;
+  border-color: rgba(77, 184, 168, 0.2);
+}
+
 .stat-label {
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -620,6 +625,11 @@ html.dark-mode .mode-config input {
   box-shadow: var(--shadow-sm);
   display: grid;
   gap: 10px;
+}
+
+html.dark-mode .stats-item {
+  background: #2a2a2a;
+  border-color: rgba(77, 184, 168, 0.2);
 }
 
 .stats-question {
