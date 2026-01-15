@@ -1685,6 +1685,110 @@ const hintsByQuestionText = {
     "Plat de frites, sauce brune et fromage en grains venu du Québec.",
 };
 
+const getAnswerLabel = (question) => {
+  if (!question || !Array.isArray(question.answers)) {
+    return "";
+  }
+  const answer = question.answers[question.correct];
+  if (typeof answer === "string") {
+    return answer;
+  }
+  if (answer && typeof answer === "object") {
+    return answer.label || "";
+  }
+  return "";
+};
+
+const hintStopWords = new Set([
+  "de",
+  "la",
+  "le",
+  "les",
+  "du",
+  "des",
+  "d",
+  "l",
+  "aux",
+  "au",
+  "et",
+]);
+
+const toRoman = (value) => {
+  const map = [
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ];
+  let remaining = value;
+  let result = "";
+  for (const [number, symbol] of map) {
+    while (remaining >= number) {
+      result += symbol;
+      remaining -= number;
+    }
+  }
+  return result || value.toString();
+};
+
+const buildAutoHint = (question) => {
+  const label = getAnswerLabel(question).trim();
+  if (!label) {
+    return "";
+  }
+  const text = (question.text || "").toLowerCase();
+  const compact = label.replace(/\s+/g, " ").trim();
+  const lettersOnly = label.replace(/[^A-Za-zÀ-ÿ]/g, "");
+  const digitsOnly = (label.match(/\d+/g) || []).join("");
+  const words = compact.split(/[\s-]+/).filter(Boolean);
+
+  if (text.includes("année") && digitsOnly) {
+    const year = parseInt(digitsOnly, 10);
+    if (Number.isFinite(year) && year > 0) {
+      const century = Math.floor((year - 1) / 100) + 1;
+      return `Année du ${toRoman(century)}e siècle.`;
+    }
+  }
+
+  if (/^\d+$/.test(compact)) {
+    const digits = compact.length;
+    return `Nombre à ${digits} chiffre${digits > 1 ? "s" : ""}.`;
+  }
+
+  if (/\d/.test(compact)) {
+    if (compact.length <= 6) {
+      return `Réponse en ${compact.length} caractères, contient un chiffre.`;
+    }
+    if (digitsOnly) {
+      return `Indice : contient le nombre ${digitsOnly}.`;
+    }
+  }
+
+  if (words.length >= 2) {
+    const majorWords = words.filter(
+      (word) => !hintStopWords.has(word.toLowerCase())
+    );
+    const initialSource = majorWords.length ? majorWords : words;
+    const initials = initialSource
+      .map((word) => word[0]?.toUpperCase())
+      .filter(Boolean)
+      .join(".");
+    return `${words.length} mots. Initiales : ${initials}.`;
+  }
+
+  if (lettersOnly.length) {
+    const first = lettersOnly[0].toUpperCase();
+    const last = lettersOnly[lettersOnly.length - 1].toLowerCase();
+    if (lettersOnly.length <= 4) {
+      return `${lettersOnly.length} lettres. Commence par "${first}" et finit par "${last}".`;
+    }
+    return `${lettersOnly.length} lettres. Commence par "${first}".`;
+  }
+
+  return `Réponse en ${compact.length} caractères.`;
+};
+
 const difficultyOrder = {
   easy: 0,
   medium: 1,
@@ -1741,7 +1845,8 @@ const normalizeQuestion = (question) => {
   const timeLimit = Number.isFinite(question.timeLimit)
     ? question.timeLimit
     : DEFAULT_TIME_LIMITS[difficulty] ?? DEFAULT_TIME_LIMITS.medium;
-  const hint = question.hint || hintsByQuestionText[question.text];
+  const hint =
+    question.hint || hintsByQuestionText[question.text] || buildAutoHint(question);
   return {
     ...question,
     difficulty,
@@ -2236,7 +2341,7 @@ const setupHintForQuestion = (question) => {
   if (!hintBtn || !hintBox || !question) {
     return;
   }
-  const hasHint = question.difficulty === "hard" && question.hint;
+  const hasHint = question.difficulty === "hard" && Boolean(question.hint);
   if (!hasHint) {
     return;
   }
