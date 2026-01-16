@@ -1943,6 +1943,7 @@ const buildProgressiveQuestions = (questionSet = []) => {
 const TIME_TRIAL_DURATION = 240;
 const AUDIO_BASE_PATH = "../assets/audio";
 const USE_SPEECH_ONLY = true;
+const INFINITE_TOTAL_LABEL = "∞";
 
 let currentTheme = themes[0];
 let activeQuestions = buildProgressiveQuestions(currentTheme.questions);
@@ -1966,6 +1967,8 @@ let globalTimerId = null;
 let globalTimeLeft = 0;
 let isTimeTrial = false;
 let isFlashcardMode = false;
+let isInfiniteMode = false;
+let infiniteQuestionCount = 0;
 
 // DOM Elements
 const introScreen = getElement("#intro-screen");
@@ -1986,6 +1989,7 @@ const tweetBtn = getElement("#tweet-btn");
 const timeTrialToggle = getElement("#time-trial-toggle");
 const timeTrialDurationInput = getElement("#time-trial-duration");
 const flashcardToggle = getElement("#flashcard-toggle");
+const infiniteToggle = getElement("#infinite-toggle");
 const timerDiv = getElement("#timer-div");
 const globalTimerDiv = getElement("#global-timer-div");
 const globalTimeLeftSpan = getElement("#global-time-left");
@@ -2477,6 +2481,9 @@ const resetStats = () => {
 };
 
 const recordQuestionStats = ({ isCorrect, timedOut }) => {
+  if (isInfiniteMode) {
+    return;
+  }
   if (questionStats[currentQuestionIndex]) {
     return;
   }
@@ -2636,11 +2643,19 @@ function startQuiz() {
   resetStats();
   preloadThemeImages(currentTheme);
   currentQuestionIndex = 0;
+  infiniteQuestionCount = 0;
   score = 0;
   isFlashcardMode = flashcardToggle ? flashcardToggle.checked : false;
-  isTimeTrial = !isFlashcardMode && timeTrialToggle ? timeTrialToggle.checked : false;
+  isInfiniteMode = infiniteToggle ? infiniteToggle.checked : false;
+  isTimeTrial =
+    !isFlashcardMode && !isInfiniteMode && timeTrialToggle
+      ? timeTrialToggle.checked
+      : false;
 
-  setText(totalQuestionsSpan, activeQuestions.length);
+  setText(
+    totalQuestionsSpan,
+    isInfiniteMode ? INFINITE_TOTAL_LABEL : activeQuestions.length
+  );
 
   if (isFlashcardMode) {
     hideElement(globalTimerDiv);
@@ -2679,7 +2694,10 @@ function showQuestion() {
     return;
   }
   setText(questionText, q.text);
-  setText(currentQuestionIndexSpan, currentQuestionIndex + 1);
+  const displayIndex = isInfiniteMode
+    ? infiniteQuestionCount + 1
+    : currentQuestionIndex + 1;
+  setText(currentQuestionIndexSpan, displayIndex);
   updateProgressBar();
   setupHintForQuestion(q);
   questionStartTime = Date.now();
@@ -2748,6 +2766,15 @@ function selectAnswer(index, btn) {
 
 function nextQuestion() {
   currentQuestionIndex++;
+  if (isInfiniteMode) {
+    infiniteQuestionCount++;
+    if (currentQuestionIndex >= activeQuestions.length) {
+      activeQuestions = buildProgressiveQuestions(currentTheme?.questions || []);
+      currentQuestionIndex = 0;
+    }
+    showQuestion();
+    return;
+  }
   if (currentQuestionIndex < activeQuestions.length) {
     showQuestion();
   } else {
