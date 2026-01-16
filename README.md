@@ -1,4 +1,10 @@
-# Quiz Dynamique
+g# Quiz Dynamique
+
+Version : 1.0.0
+Date : 24/07/2025
+Équipe : [Lucas, Hugo, Enzo, Jonathan]
+
+
 
 Un quiz interactif en HTML/CSS/JS permettant :
 - Un **timer** par question,
@@ -12,11 +18,25 @@ Un quiz interactif en HTML/CSS/JS permettant :
 2. Feedback visuel (vert/rouge).
 3. Indicateur de progression.
 4. Meilleur score stocké localement.
+5. Mode infini
+6. Systéme de récompense badge
+7. Difficulté progressive
+8. Indice par question
+9. Théme par image
+10. Partage sur les réseaux sociaux
+11. Statistiques détaillé du quizz
+12. Audio pour les questions
+13. Mode contre la montre
+14. Récapitulatif
+15. Mode sombre
+16. Mode flashcards
+17. Mélanger l'ordre des questions
+18. Multi théme
 
 ## Installation
 
 1. Cloner ce dépôt :
-`git clone https://github.com/votre-nom/quiz-dynamique.git`
+` git clone https://github.com/Azxrth/quiz-interactif.git`
 
 2. Ouvrir `index.html` dans un navigateur.
 
@@ -29,10 +49,7 @@ Un quiz interactif en HTML/CSS/JS permettant :
 
 ## Améliorations possibles
 
-- Mélanger l’ordre des questions.
-- Récapitulatif des erreurs.
-- Mode multi-thème.
-- Etc.
+- Changement de langues
 
 ## Workflow Git
 
