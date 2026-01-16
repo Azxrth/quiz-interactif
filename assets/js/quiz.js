@@ -27,7 +27,7 @@ const createAnswerButton = (answer, onClick) => {
 };
 
 const updateScoreDisplay = (scoreElement, score, total) => {
-  scoreElement.textContent = `Votre score : ${score} / ${total}`;
+  scoreElement.textContent = formatScoreLabel(score, total);
 };
 
 const lockAnswers = (container) => {
@@ -64,10 +64,11 @@ const startTimer = (duration, onTick, onComplete) => {
   return timerId;
 };
 
-const themes = [
+const baseThemes = [
   {
     id: "general",
     label: "Culture générale",
+    description: "Faits, records, pays, histoire rapide.",
     questions: [
       {
         text: "Quelle est la capitale de la France ?",
@@ -199,6 +200,7 @@ const themes = [
   {
     id: "cinema",
     label: "Cinéma & séries",
+    description: "Répliques, acteurs, univers, scènes cultes.",
     questions: [
       {
         text: "Quel film d'animation met en scène un ogre vert ?",
@@ -325,6 +327,7 @@ const themes = [
   {
     id: "music",
     label: "Musique",
+    description: "Genres, artistes, décennies, blind test soft.",
     questions: [
       {
         text: "Quel instrument a généralement six cordes ?",
@@ -451,6 +454,7 @@ const themes = [
   {
     id: "gaming",
     label: "Jeux vidéo",
+    description: "Consoles, licences, mécaniques, personnages.",
     questions: [
       {
         text: "Quel héros porte une casquette rouge et saute sur des Goombas ?",
@@ -577,6 +581,7 @@ const themes = [
   {
     id: "sport",
     label: "Sport",
+    description: "Règles, grands événements, légendes, clubs.",
     questions: [
       {
         text: "Combien de joueurs composent une équipe de football sur le terrain ?",
@@ -703,6 +708,7 @@ const themes = [
   {
     id: "science",
     label: "Science & espace",
+    description: "Planètes, corps humain, technologies, fun facts.",
     questions: [
       {
         text: "Quelle planète est connue comme la planète rouge ?",
@@ -829,6 +835,7 @@ const themes = [
   {
     id: "tech",
     label: "Technologie & internet",
+    description: "Réseaux sociaux, culture web, sécurité.",
     questions: [
       {
         text: "Quel moteur de recherche est le plus utilisé ?",
@@ -965,6 +972,7 @@ const themes = [
   {
     id: "food",
     label: "Food & cuisine du monde",
+    description: "Plats, pays d'origine, ingrédients, traditions.",
     questions: [
       {
         text: "La pizza Margherita vient de quel pays ?",
@@ -1091,6 +1099,7 @@ const themes = [
   {
     id: "image-quiz",
     label: "Quiz avec image",
+    description: "Analyse visuelle et culture générale en images.",
     answerType: "image",
     questions: [
       {
@@ -1597,10 +1606,72 @@ const themes = [
   },
 ];
 
-const themesById = themes.reduce((acc, theme) => {
-  acc[theme.id] = theme;
-  return acc;
-}, {});
+const AUDIO_LABELS = {
+  default: "Lecture",
+  playing: "Lecture en cours",
+};
+
+const AUDIO_STATUS_COPY = {
+  "audio.statusPlaying": "Lecture en cours",
+  "audio.statusReady": "Audio prêt",
+  "audio.statusSpeechReady": "Synthèse vocale prête",
+  "audio.statusSpeechAvailable": "Synthèse vocale disponible",
+  "audio.statusSpeechUnavailable": "Synthèse vocale indisponible",
+  "audio.statusUnavailable": "Audio indisponible",
+  "audio.statusLoading": "Chargement des voix...",
+  "audio.statusStopped": "Lecture arrêtée",
+  "audio.statusNotFound": "Audio introuvable",
+  "audio.statusSpeech": "Synthèse vocale",
+};
+
+const STATUS_LABELS = {
+  correct: "Bonne réponse",
+  wrong: "Mauvaise réponse",
+  timeout: "Temps écoulé",
+};
+
+const DIFFICULTY_LABELS = {
+  easy: "Facile",
+  medium: "Moyen",
+  hard: "Difficile",
+};
+
+const REWARD_BADGES = {
+  starter: { title: "Décollage", description: "5 bonnes réponses." },
+  top10: { title: "Top 10", description: "10 bonnes réponses." },
+  expert: { title: "Expert", description: "15 bonnes réponses." },
+  perfect: { title: "Sans faute", description: "Score parfait sur le thème." },
+};
+
+const REWARD_STATUS = {
+  earned: "Débloqué",
+  locked: "À débloquer",
+};
+
+const RECAP_LABELS = {
+  correct: "Bonne réponse",
+  wrong: "Mauvaise réponse",
+  answerPrefix: "La réponse était :",
+};
+
+const TRAINING_COMPLETE_LABEL = "Entraînement terminé !";
+const SPEECH_LOCALE = "fr-FR";
+const VOICE_PREFIX = "fr";
+
+const formatScoreLabel = (score, total) => `Votre score : ${score} / ${total}`;
+const formatTweetText = (score, total) =>
+  `J'ai fait un score de ${score}/${total} sur le Quiz Dynamique ! 🎯`;
+
+const getAudioStatusCopy = (statusKey) => AUDIO_STATUS_COPY[statusKey] || "";
+
+const buildThemesById = (themeList) =>
+  themeList.reduce((acc, theme) => {
+    acc[theme.id] = theme;
+    return acc;
+  }, {});
+
+const themes = baseThemes;
+const themesById = buildThemesById(themes);
 
 const hintsByQuestionText = {
   "Quel courant océanique chaud influence le climat de l'Europe de l'Ouest ?":
@@ -1996,6 +2067,32 @@ const updateProgressBar = () => {
   progressFill.style.width = `${percent}%`;
 };
 
+const updateThemeCards = () => {
+  if (!themeInputs.length) {
+    return;
+  }
+  themeInputs.forEach((input) => {
+    const theme = themesById[input.value];
+    if (!theme) {
+      return;
+    }
+    const card = input.closest(".theme-card");
+    if (!card) {
+      return;
+    }
+    const title = card.querySelector(".theme-card__title");
+    const desc = card.querySelector(".theme-card__desc");
+    if (title) {
+      setText(title, theme.label);
+    }
+    if (desc) {
+      setText(desc, theme.description || "");
+    }
+  });
+};
+
+updateThemeCards();
+
 const preloadedImages = new Set();
 
 const preloadImages = (sources = []) => {
@@ -2051,7 +2148,7 @@ const getSelectedTheme = () => {
   if (selectedInput && themesById[selectedInput.value]) {
     return themesById[selectedInput.value];
   }
-  return themes[0];
+  return themes[0] || baseThemes[0];
 };
 
 const updateThemeLabel = (theme) => {
@@ -2061,11 +2158,8 @@ const updateThemeLabel = (theme) => {
   setText(themeLabel, theme.label);
 };
 
-const difficultyLabels = {
-  easy: "Facile",
-  medium: "Moyen",
-  hard: "Difficile",
-};
+const getDifficultyLabel = (difficulty) =>
+  DIFFICULTY_LABELS[difficulty] || DIFFICULTY_LABELS.medium;
 
 const formatSeconds = (value) => {
   if (!Number.isFinite(value)) {
@@ -2081,12 +2175,12 @@ const pickPreferredVoice = (voices) => {
   if (!voices.length) {
     return null;
   }
+  const prefix = VOICE_PREFIX;
   return (
     voices.find(
-      (voice) =>
-        voice.lang.toLowerCase().startsWith("fr") && voice.localService
+      (voice) => voice.lang.toLowerCase().startsWith(prefix) && voice.localService
     ) ||
-    voices.find((voice) => voice.lang.toLowerCase().startsWith("fr")) ||
+    voices.find((voice) => voice.lang.toLowerCase().startsWith(prefix)) ||
     voices.find((voice) => voice.localService) ||
     voices[0]
   );
@@ -2103,11 +2197,13 @@ const loadSpeechVoices = () => {
   preferredVoice = pickPreferredVoice(speechVoices);
 };
 
-const updateAudioUI = ({ playing, available, status }) => {
+const updateAudioUI = ({ playing, available, status, statusKey }) => {
   if (typeof available === "boolean") {
     audioAvailable = available;
   }
-  if (typeof status === "string") {
+  if (typeof statusKey === "string") {
+    audioStatusMessage = statusKey ? getAudioStatusCopy(statusKey) : "";
+  } else if (typeof status === "string") {
     audioStatusMessage = status;
   }
   if (typeof playing === "boolean") {
@@ -2118,7 +2214,9 @@ const updateAudioUI = ({ playing, available, status }) => {
   }
   playAudioBtn.disabled = !audioAvailable;
   playAudioBtn.classList.toggle("is-playing", Boolean(playing));
-  playAudioBtn.textContent = isAudioPlaying ? "Lecture en cours" : "Lecture";
+  playAudioBtn.textContent = isAudioPlaying
+    ? AUDIO_LABELS.playing
+    : AUDIO_LABELS.default;
   if (audioStatus) {
     setText(audioStatus, audioStatusMessage);
   }
@@ -2133,7 +2231,7 @@ const stopAudio = ({ showStatus } = { showStatus: false }) => {
     window.speechSynthesis.cancel();
   }
   if (showStatus) {
-    updateAudioUI({ playing: false, status: "Lecture arrêtée" });
+    updateAudioUI({ playing: false, statusKey: "audio.statusStopped" });
   } else {
     isAudioPlaying = false;
   }
@@ -2155,14 +2253,14 @@ const getAudioSource = (question, index) => {
 
 const speakQuestion = (text) => {
   if (!hasSpeechSupport()) {
-    updateAudioUI({ playing: false, status: "Audio indisponible" });
+    updateAudioUI({ playing: false, statusKey: "audio.statusUnavailable" });
     return;
   }
   const speakNow = () => {
     window.speechSynthesis.cancel();
     window.speechSynthesis.resume();
     speechUtterance = new SpeechSynthesisUtterance(text);
-    speechUtterance.lang = "fr-FR";
+    speechUtterance.lang = SPEECH_LOCALE;
     if (!speechVoices.length) {
       loadSpeechVoices();
     }
@@ -2173,13 +2271,13 @@ const speakQuestion = (text) => {
     speechUtterance.pitch = 1;
     speechUtterance.volume = 1;
     speechUtterance.onstart = () => {
-      updateAudioUI({ playing: true, status: "Lecture en cours" });
+      updateAudioUI({ playing: true, statusKey: "audio.statusPlaying" });
     };
     speechUtterance.onend = () => {
-      updateAudioUI({ playing: false, status: "Audio prêt" });
+      updateAudioUI({ playing: false, statusKey: "audio.statusReady" });
     };
     speechUtterance.onerror = () => {
-      updateAudioUI({ playing: false, status: "Audio indisponible" });
+      updateAudioUI({ playing: false, statusKey: "audio.statusUnavailable" });
     };
     window.speechSynthesis.speak(speechUtterance);
     setTimeout(() => {
@@ -2187,7 +2285,7 @@ const speakQuestion = (text) => {
         window.speechSynthesis.speak(speechUtterance);
       }
     }, 200);
-    updateAudioUI({ playing: true, status: "Synthèse vocale" });
+    updateAudioUI({ playing: true, statusKey: "audio.statusSpeech" });
   };
 
   if (!speechVoices.length) {
@@ -2197,7 +2295,7 @@ const speakQuestion = (text) => {
     preferredVoice = pickPreferredVoice(speechVoices);
   }
   if (!speechVoices.length) {
-    updateAudioUI({ playing: false, status: "Chargement des voix..." });
+    updateAudioUI({ playing: false, statusKey: "audio.statusLoading" });
     window.speechSynthesis.onvoiceschanged = () => {
       loadSpeechVoices();
       preferredVoice = pickPreferredVoice(speechVoices);
@@ -2215,12 +2313,12 @@ const playAudioFile = async (src, fallbackText) => {
   }
   try {
     await audioPlayer.play();
-    updateAudioUI({ playing: true, status: "Lecture en cours" });
+    updateAudioUI({ playing: true, statusKey: "audio.statusPlaying" });
   } catch (error) {
     if (hasSpeechSupport()) {
       speakQuestion(fallbackText);
     } else {
-      updateAudioUI({ playing: false, status: "Audio introuvable" });
+      updateAudioUI({ playing: false, statusKey: "audio.statusNotFound" });
     }
   }
 };
@@ -2229,7 +2327,7 @@ const prepareAudioForQuestion = () => {
   stopAudio();
   const q = activeQuestions[currentQuestionIndex];
   if (!q) {
-    updateAudioUI({ playing: false, available: false, status: "" });
+    updateAudioUI({ playing: false, available: false, statusKey: "" });
     return;
   }
   const disableAudio = isAudioDisabledForQuestion(q);
@@ -2237,7 +2335,7 @@ const prepareAudioForQuestion = () => {
     questionActions.classList.toggle("hidden", disableAudio);
   }
   if (disableAudio) {
-    updateAudioUI({ playing: false, available: false, status: "" });
+    updateAudioUI({ playing: false, available: false, statusKey: "" });
     return;
   }
   if (USE_SPEECH_ONLY) {
@@ -2245,9 +2343,9 @@ const prepareAudioForQuestion = () => {
     updateAudioUI({
       playing: false,
       available: speechAvailable,
-      status: speechAvailable
-        ? "Synthèse vocale prête"
-        : "Synthèse vocale indisponible",
+      statusKey: speechAvailable
+        ? "audio.statusSpeechReady"
+        : "audio.statusSpeechUnavailable",
     });
     return;
   }
@@ -2255,18 +2353,18 @@ const prepareAudioForQuestion = () => {
   audioSourceForQuestion = src;
   audioFallbackText = q.text;
   if (src) {
-    updateAudioUI({ playing: false, available: true, status: "Audio prêt" });
+    updateAudioUI({ playing: false, available: true, statusKey: "audio.statusReady" });
   } else if (hasSpeechSupport()) {
     updateAudioUI({
       playing: false,
       available: true,
-      status: "Synthèse vocale disponible",
+      statusKey: "audio.statusSpeechAvailable",
     });
   } else {
     updateAudioUI({
       playing: false,
       available: false,
-      status: "Audio indisponible",
+      statusKey: "audio.statusUnavailable",
     });
   }
 };
@@ -2284,14 +2382,14 @@ function toggleAudioPlayback() {
     return;
   }
   if (isAudioDisabledForQuestion(q)) {
-    updateAudioUI({ playing: false, available: false, status: "" });
+    updateAudioUI({ playing: false, available: false, statusKey: "" });
     return;
   }
   if (USE_SPEECH_ONLY) {
     if (hasSpeechSupport()) {
       speakQuestion(q.text);
     } else {
-      updateAudioUI({ playing: false, status: "Synthèse vocale indisponible" });
+      updateAudioUI({ playing: false, statusKey: "audio.statusSpeechUnavailable" });
     }
     return;
   }
@@ -2301,19 +2399,19 @@ function toggleAudioPlayback() {
   } else if (hasSpeechSupport()) {
     speakQuestion(q.text);
   } else {
-    updateAudioUI({ playing: false, status: "Audio indisponible" });
+    updateAudioUI({ playing: false, statusKey: "audio.statusUnavailable" });
   }
 }
 
 audioPlayer.addEventListener("ended", () => {
-  updateAudioUI({ playing: false, status: "Audio prêt" });
+  updateAudioUI({ playing: false, statusKey: "audio.statusReady" });
 });
 
 audioPlayer.addEventListener("error", () => {
   if (hasSpeechSupport() && audioFallbackText) {
     speakQuestion(audioFallbackText);
   } else {
-    updateAudioUI({ playing: false, status: "Audio introuvable" });
+    updateAudioUI({ playing: false, statusKey: "audio.statusNotFound" });
   }
 });
 
@@ -2435,19 +2533,18 @@ const renderStats = () => {
       "stats-badge",
       `stats-badge--${entry.difficulty || "medium"}`
     );
-    difficultyBadge.textContent =
-      difficultyLabels[entry.difficulty] || "Moyen";
+    difficultyBadge.textContent = getDifficultyLabel(entry.difficulty);
 
     const statusBadge = document.createElement("span");
     if (entry.timedOut) {
       statusBadge.classList.add("stats-badge", "stats-badge--timeout");
-      statusBadge.textContent = "Temps écoulé";
+      statusBadge.textContent = STATUS_LABELS.timeout;
     } else if (entry.isCorrect) {
       statusBadge.classList.add("stats-badge", "stats-badge--good");
-      statusBadge.textContent = "Bonne réponse";
+      statusBadge.textContent = STATUS_LABELS.correct;
     } else {
       statusBadge.classList.add("stats-badge", "stats-badge--bad");
-      statusBadge.textContent = "Mauvaise réponse";
+      statusBadge.textContent = STATUS_LABELS.wrong;
     }
 
     const timeBadge = document.createElement("span");
@@ -2461,30 +2558,10 @@ const renderStats = () => {
 };
 
 const rewardDefinitions = [
-  {
-    id: "starter",
-    title: "Décollage",
-    description: "5 bonnes réponses.",
-    threshold: 5,
-  },
-  {
-    id: "top-10",
-    title: "Top 10",
-    description: "10 bonnes réponses.",
-    threshold: 10,
-  },
-  {
-    id: "expert",
-    title: "Expert",
-    description: "15 bonnes réponses.",
-    threshold: 15,
-  },
-  {
-    id: "perfect",
-    title: "Sans faute",
-    description: "Score parfait sur le thème.",
-    isPerfect: true,
-  },
+  { id: "starter", threshold: 5 },
+  { id: "top10", threshold: 10 },
+  { id: "expert", threshold: 15 },
+  { id: "perfect", isPerfect: true },
 ];
 
 const renderRewards = () => {
@@ -2502,8 +2579,13 @@ const renderRewards = () => {
     const earned =
       isPerfect || (!reward.isPerfect && correctCount >= reward.threshold);
 
+    const rewardCopy = REWARD_BADGES[reward.id];
+
     const card = document.createElement("div");
-    card.classList.add("reward-card", earned ? "reward-card--earned" : "reward-card--locked");
+    card.classList.add(
+      "reward-card",
+      earned ? "reward-card--earned" : "reward-card--locked"
+    );
 
     const icon = document.createElement("div");
     icon.classList.add("reward-card__icon");
@@ -2511,15 +2593,17 @@ const renderRewards = () => {
 
     const title = document.createElement("div");
     title.classList.add("reward-card__title");
-    title.textContent = reward.title;
+    title.textContent = rewardCopy?.title || reward.id;
 
     const description = document.createElement("div");
     description.classList.add("reward-card__desc");
-    description.textContent = reward.description;
+    description.textContent = rewardCopy?.description || "";
 
     const status = document.createElement("div");
     status.classList.add("reward-card__status");
-    status.textContent = earned ? "Débloqué" : "À débloquer";
+    status.textContent = earned
+      ? REWARD_STATUS.earned
+      : REWARD_STATUS.locked;
 
     card.append(icon, title, description, status);
     rewardsList.appendChild(card);
@@ -2550,7 +2634,10 @@ function startQuiz() {
   clearTimers();
   resetHintUI();
   currentTheme = getSelectedTheme();
-  activeQuestions = buildProgressiveQuestions(currentTheme.questions);
+  if (!currentTheme || !Array.isArray(currentTheme.questions)) {
+    currentTheme = themes[0] || baseThemes[0];
+  }
+  activeQuestions = buildProgressiveQuestions(currentTheme?.questions || []);
   updateThemeLabel(currentTheme);
   resetStats();
   preloadThemeImages(currentTheme);
@@ -2594,6 +2681,10 @@ function showQuestion() {
   clearInterval(questionTimerId);
 
   const q = activeQuestions[currentQuestionIndex];
+  if (!q) {
+    endQuiz();
+    return;
+  }
   setText(questionText, q.text);
   setText(currentQuestionIndexSpan, currentQuestionIndex + 1);
   updateProgressBar();
@@ -2681,7 +2772,7 @@ function endQuiz() {
   showElement(resultScreen);
 
   if (isFlashcardMode) {
-    scoreText.textContent = "Entraînement terminé !";
+    scoreText.textContent = TRAINING_COMPLETE_LABEL;
     setText(bestScoreEnd, bestScore);
   } else {
     updateScoreDisplay(scoreText, score, activeQuestions.length);
@@ -2746,7 +2837,7 @@ function restartQuiz() {
 
 function tweetScore() {
   const totalQuestions = activeQuestions.length;
-  const tweetText = `J'ai fait un score de ${score}/${totalQuestions} sur le Quiz Dynamique ! 🎯`;
+  const tweetText = formatTweetText(score, totalQuestions);
   const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     tweetText
   )}`;
@@ -2772,19 +2863,19 @@ function recap() {
     const answerAssess = document.createElement("span"); // B/M R Html
     answerAssess.classList.add("stat-label");
     if (keepingScore[i] == "o") {
-      const answerAssessText = document.createTextNode("Bonne réponse");
+      const answerAssessText = document.createTextNode(RECAP_LABELS.correct);
       answerAssess.appendChild(answerAssessText);
       const newContent = document.createTextNode(recapQuestions[i].text);
       element.appendChild(newContent);
       element.appendChild(answerAssess);
     } else {
-      const answerAssessText = document.createTextNode("Mauvaise réponse");
+      const answerAssessText = document.createTextNode(RECAP_LABELS.wrong);
       answerAssess.appendChild(answerAssessText);
       const answerLabel = formatAnswer(
         recapQuestions[i].answers[recapQuestions[i].correct]
       );
       const newContent = document.createTextNode(
-        `${recapQuestions[i].text} La réponse était : ${answerLabel}`
+        `${recapQuestions[i].text} ${RECAP_LABELS.answerPrefix} ${answerLabel}`
       );
       element.appendChild(newContent);
       element.appendChild(answerAssess);

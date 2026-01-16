@@ -13,7 +13,9 @@
     <link rel="stylesheet" href="../assets/css/style.css" />
   </head>
   <body>
-    <button id="theme-toggle" class="theme-toggle" aria-label="Basculer le mode sombre"></button>
+    <div class="top-controls">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Basculer le mode sombre"></button>
+    </div>
     <main class="app">
       <header class="hero">
         <p class="eyebrow">Quiz interactif</p>
@@ -32,7 +34,9 @@
       <div class="theme-picker">
         <div class="theme-picker__header">
           <h3 class="theme-title">Choisis un thème</h3>
-          <p class="theme-hint">20 questions par thème, difficulté progressive.</p>
+          <p class="theme-hint">
+            20 questions par thème, difficulté progressive.
+          </p>
         </div>
         <div class="theme-grid" role="radiogroup" aria-label="Choix du thème">
           <label class="theme-card">
@@ -119,19 +123,24 @@
         </div>
       </div>
       <p class="score-line">
-        Meilleur score : <span id="best-score-value">0</span>
+        <span>Meilleur score :</span>
+        <span id="best-score-value">0</span>
       </p>
         <div class="settings">
           <label class="mode-toggle">
             <input type="checkbox" id="flashcard-toggle" />
-            Mode Flashcard (entraînement sans timer ni score)
+            <span>
+              Mode Flashcard (entraînement sans timer ni score)
+            </span>
           </label>
           <label class="mode-toggle">
             <input type="checkbox" id="time-trial-toggle" />
-            Mode contre-la-montre (temps global)
+            <span>Mode contre-la-montre (temps global)</span>
           </label>
           <label class="mode-config">
-            Durée du mode contre-la-montre (secondes)
+            <span>
+              Durée du mode contre-la-montre (secondes)
+            </span>
             <input
               type="number"
               id="time-trial-duration"
@@ -150,7 +159,8 @@
         <div id="progress" class="progress">
           <div class="progress__meta">
             <span>
-              Question <span id="current-question-index"></span> /
+              <span>Question</span>
+              <span id="current-question-index"></span> /
               <span id="total-questions"></span>
             </span>
             <span id="theme-label" class="theme-label"></span>
@@ -161,10 +171,14 @@
         </div>
         <div class="meta-row">
           <div id="global-timer-div" class="timer timer--global" style="display: none">
-            Temps global restant : <span id="global-time-left">0</span>s
+            <span>Temps global restant :</span>
+            <span id="global-time-left">0</span>
+            <span>s</span>
           </div>
           <div id="timer-div" class="timer">
-            Temps restant : <span id="time-left">0</span>s
+            <span>Temps restant :</span>
+            <span id="time-left">0</span>
+            <span>s</span>
           </div>
         </div>
         <div id="question-media" class="question-media hidden">
@@ -177,6 +191,7 @@
               id="play-audio-btn"
               class="btn btn-secondary btn-audio"
               type="button"
+             
             >
               Lecture
             </button>
@@ -189,6 +204,7 @@
               type="button"
               aria-controls="hint-box"
               aria-expanded="false"
+             
             >
               Indice
             </button>
@@ -205,6 +221,7 @@
             id="restart-theme-btn"
             class="btn btn-secondary btn-restart"
             type="button"
+           
           >
             Recommencer
           </button>
@@ -212,6 +229,7 @@
             id="back-home-btn"
             class="btn btn-secondary btn-back"
             type="button"
+           
           >
             Retour
           </button>
@@ -223,12 +241,17 @@
         <div class="result-scores">
           <p id="score-text" class="score-final"></p>
           <p class="score-line">
-            Meilleur score : <span id="best-score-end">0</span>
+            <span>Meilleur score :</span>
+            <span id="best-score-end">0</span>
           </p>
         </div>
         <div class="result-actions">
-          <button id="restart-btn" class="btn btn-primary">Recommencer</button>
-          <button id="tweet-btn" class="btn btn-secondary">Partager sur Twitter</button>
+          <button id="restart-btn" class="btn btn-primary">
+            Recommencer
+          </button>
+          <button id="tweet-btn" class="btn btn-secondary">
+            Partager sur Twitter
+          </button>
         </div>
       </section>
 
