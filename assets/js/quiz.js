@@ -11,11 +11,16 @@ const createAnswerButton = (answer, onClick) => {
   if (typeof answer === "string") {
     btn.textContent = answer;
   } else if (answer && answer.imageSrc) {
-    btn.classList.add("answer-btn--image");
+    btn.classList.add("answer-btn--image", "is-loading");
     const img = document.createElement("img");
     img.src = answer.imageSrc;
     img.alt = answer.label || "Réponse";
     img.loading = "lazy";
+    img.decoding = "async";
+    img.setAttribute("fetchpriority", "low");
+    const handleImageReady = () => btn.classList.remove("is-loading");
+    img.addEventListener("load", handleImageReady);
+    img.addEventListener("error", handleImageReady);
     const label = document.createElement("span");
     label.classList.add("sr-only");
     label.textContent = answer.label || "Réponse";
@@ -2100,26 +2105,39 @@ const preloadImages = (sources = []) => {
     }
     const img = new Image();
     img.decoding = "async";
+    img.setAttribute("fetchpriority", "low");
     img.src = src;
     preloadedImages.add(src);
   });
 };
 
-const preloadThemeImages = (theme) => {
-  if (!theme || !theme.questions) {
+const collectQuestionImages = (question) => {
+  if (!question) {
+    return [];
+  }
+  const sources = [];
+  if (question.promptImage) {
+    sources.push(question.promptImage);
+  }
+  (question.answers || []).forEach((answer) => {
+    if (answer && typeof answer === "object" && answer.imageSrc) {
+      sources.push(answer.imageSrc);
+    }
+  });
+  return sources;
+};
+
+const preloadUpcomingQuestions = (count = 2) => {
+  if (!activeQuestions.length) {
     return;
   }
   const sources = [];
-  theme.questions.forEach((question) => {
-    if (question.promptImage) {
-      sources.push(question.promptImage);
+  for (let offset = 1; offset <= count; offset += 1) {
+    const question = activeQuestions[currentQuestionIndex + offset];
+    if (question) {
+      sources.push(...collectQuestionImages(question));
     }
-    (question.answers || []).forEach((answer) => {
-      if (answer && typeof answer === "object" && answer.imageSrc) {
-        sources.push(answer.imageSrc);
-      }
-    });
-  });
+  }
   if (!sources.length) {
     return;
   }
@@ -2641,7 +2659,6 @@ function startQuiz() {
   activeQuestions = buildProgressiveQuestions(currentTheme?.questions || []);
   updateThemeLabel(currentTheme);
   resetStats();
-  preloadThemeImages(currentTheme);
   currentQuestionIndex = 0;
   infiniteQuestionCount = 0;
   score = 0;
@@ -2706,10 +2723,17 @@ function showQuestion() {
   if (questionMedia && questionImage) {
     if (promptSrc) {
       questionMedia.classList.remove("hidden");
+      questionMedia.classList.add("is-loading");
+      questionImage.decoding = "async";
+      questionImage.loading = "eager";
+      questionImage.setAttribute("fetchpriority", "high");
+      questionImage.onload = () => questionMedia.classList.remove("is-loading");
+      questionImage.onerror = () => questionMedia.classList.remove("is-loading");
       questionImage.src = promptSrc;
       questionImage.alt = q.promptAlt || q.text || "Illustration de la question";
     } else {
       questionMedia.classList.add("hidden");
+      questionMedia.classList.remove("is-loading");
       questionImage.src = "";
       questionImage.alt = "";
     }
@@ -2728,6 +2752,8 @@ function showQuestion() {
   } else {
     nextBtn.classList.add("hidden");
   }
+
+  preloadUpcomingQuestions(2);
 
   if (isTimeTrial || isFlashcardMode) {
     return;
