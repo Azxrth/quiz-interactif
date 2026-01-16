@@ -1648,12 +1648,6 @@ const REWARD_STATUS = {
   locked: "À débloquer",
 };
 
-const RECAP_LABELS = {
-  correct: "Bonne réponse",
-  wrong: "Mauvaise réponse",
-  answerPrefix: "La réponse était :",
-};
-
 const TRAINING_COMPLETE_LABEL = "Entraînement terminé !";
 const SPEECH_LOCALE = "fr-FR";
 const VOICE_PREFIX = "fr";
@@ -2641,7 +2635,6 @@ function startQuiz() {
   updateThemeLabel(currentTheme);
   resetStats();
   preloadThemeImages(currentTheme);
-  keepingScore.length = 0;
   currentQuestionIndex = 0;
   score = 0;
   isFlashcardMode = flashcardToggle ? flashcardToggle.checked : false;
@@ -2743,10 +2736,8 @@ function selectAnswer(index, btn) {
       score++;
     }
     btn.classList.add("correct");
-    keepingScore.push("o")
   } else {
     btn.classList.add("wrong");
-    keepingScore.push("x")
   }
 
   recordQuestionStats({ isCorrect: index === q.correct, timedOut: false });
@@ -2790,7 +2781,6 @@ function endQuiz() {
   if (rewardsScreen) {
     showElement(rewardsScreen);
   }
-  recap();
 }
 
 function restartCurrentTheme() {
@@ -2842,44 +2832,4 @@ function tweetScore() {
     tweetText
   )}`;
   window.open(tweetUrl, "_blank");
-}
-
-const keepingScore = [];
-
-function recap() {
-  const recap = Array.from(document.getElementsByClassName("recap"))[0];
-  const theme = getSelectedTheme();
-  const recapQuestions = activeQuestions.length ? activeQuestions : theme.questions;
-  const formatAnswer = (answer) =>
-    typeof answer === "string" ? answer : answer?.label || "Réponse";
-
-  recap.setAttribute("display", "flex");
-  recap.setAttribute("flex-direction", "column");
-  recap.innerHTML = "";
-
-  for (let i = 0; i < recapQuestions.length; i++) {
-    const element = document.createElement("div"); // création container
-
-    const answerAssess = document.createElement("span"); // B/M R Html
-    answerAssess.classList.add("stat-label");
-    if (keepingScore[i] == "o") {
-      const answerAssessText = document.createTextNode(RECAP_LABELS.correct);
-      answerAssess.appendChild(answerAssessText);
-      const newContent = document.createTextNode(recapQuestions[i].text);
-      element.appendChild(newContent);
-      element.appendChild(answerAssess);
-    } else {
-      const answerAssessText = document.createTextNode(RECAP_LABELS.wrong);
-      answerAssess.appendChild(answerAssessText);
-      const answerLabel = formatAnswer(
-        recapQuestions[i].answers[recapQuestions[i].correct]
-      );
-      const newContent = document.createTextNode(
-        `${recapQuestions[i].text} ${RECAP_LABELS.answerPrefix} ${answerLabel}`
-      );
-      element.appendChild(newContent);
-      element.appendChild(answerAssess);
-    }
-    recap.appendChild(element);
-  }
 }
